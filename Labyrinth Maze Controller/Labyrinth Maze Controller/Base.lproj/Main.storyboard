@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Bluetooth_Light_Arduino" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bluetooth status" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r6J-oT-Vhb">
+                                <rect key="frame" x="57" y="194" width="300" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="JH8-0x-H9t"/>
+                                    <constraint firstAttribute="height" constant="80" id="mwY-Ea-kQk"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="1" maxValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="Cdc-NN-UH4">
+                                <rect key="frame" x="55" y="625" width="304" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="6ZB-1P-PhN"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="sliderValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="qrN-e7-zRZ"/>
+                                </connections>
+                            </slider>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RYx-Zd-ff6">
+                                <rect key="frame" x="20" y="408" width="80" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="Rgi-ob-JWS"/>
+                                    <constraint firstAttribute="width" constant="80" id="yrk-cL-Edv"/>
+                                </constraints>
+                                <state key="normal" title="Button" image="leftArrow"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aIY-s9-CDt">
+                                <rect key="frame" x="314" y="408" width="80" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="kv2-1q-OFe"/>
+                                    <constraint firstAttribute="height" constant="80" id="qO5-1i-ECp"/>
+                                </constraints>
+                                <state key="normal" title="Button" image="rightArrow"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rotation speed: 1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bFa-Ht-sWE">
+                                <rect key="frame" x="137.5" y="574" width="139.5" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="r6J-oT-Vhb" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="KV2-oG-VTA"/>
+                            <constraint firstAttribute="trailing" secondItem="aIY-s9-CDt" secondAttribute="trailing" constant="20" id="Lqw-UN-xcs"/>
+                            <constraint firstItem="RYx-Zd-ff6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="T9h-7u-LHC"/>
+                            <constraint firstItem="r6J-oT-Vhb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="150" id="Vjw-M1-Dv4"/>
+                            <constraint firstItem="Cdc-NN-UH4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ao1-tZ-wZy"/>
+                            <constraint firstItem="bFa-Ht-sWE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="cXL-Gy-F1e"/>
+                            <constraint firstItem="aIY-s9-CDt" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="gqK-9V-Ip2"/>
+                            <constraint firstItem="RYx-Zd-ff6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="gyg-jZ-JIb"/>
+                            <constraint firstItem="Cdc-NN-UH4" firstAttribute="top" secondItem="bFa-Ht-sWE" secondAttribute="bottom" constant="30" id="oac-xC-IaW"/>
+                            <constraint firstItem="bFa-Ht-sWE" firstAttribute="top" secondItem="r6J-oT-Vhb" secondAttribute="bottom" constant="300" id="qzQ-tm-ebh"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="bluetoothStatusLabel" destination="r6J-oT-Vhb" id="KH4-iT-PPc"/>
+                        <outlet property="leftArrowButton" destination="RYx-Zd-ff6" id="lSH-NR-SAN"/>
+                        <outlet property="rightArrowButton" destination="aIY-s9-CDt" id="f5Z-Wk-QqO"/>
+                        <outlet property="rotationSpeedSlider" destination="Cdc-NN-UH4" id="mSE-VC-oUk"/>
+                        <outlet property="speedLabel" destination="bFa-Ht-sWE" id="arh-Ox-AO4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="leftArrow" width="256" height="256"/>
+        <image name="rightArrow" width="256" height="256"/>
+    </resources>
+</document>
