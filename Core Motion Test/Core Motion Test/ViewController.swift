@@ -19,13 +19,14 @@ class ViewController: UIViewController {
      let circleDiameter: CGFloat = 50.0
      let circleMidDiameter: CGFloat = 60.0
      let circleBorderDiameter: CGFloat = 75.0
-     let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0
+     let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // 100 Hz
      
      let maxPitchAngle: Double = 45.0
      let maxRollAngle: Double = 45.0
      
      var screenHeight: CGFloat?
      var circleView: UIView?
+     let stewart = Stewart()
      
      let hapticGenerator = UISelectionFeedbackGenerator()
      
@@ -109,6 +110,8 @@ class ViewController: UIViewController {
                     print("x: \(-cleanedPitch), y: \(-cleanedRoll)")
                     self.xAngleLabel.text = "x: \(Int(-cleanedPitch))°"
                     self.yAngleLabel.text = "y: \(Int(-cleanedRoll))°"
+                    
+                    self.stewart.motorAngles(xAngle: (Double(-cleanedPitch) * Double.pi/180.0), yAngle: Double(-cleanedRoll) * Double.pi/180.0)
                     
                     let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
                     
