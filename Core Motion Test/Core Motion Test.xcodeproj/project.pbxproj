@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D7D187E52342E4DF009B5EB4 /* Stewart.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D187E42342E4DF009B5EB4 /* Stewart.swift */; };
 		F2B9DD9423426D2700AAC274 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DD9323426D2700AAC274 /* AppDelegate.swift */; };
 		F2B9DD9623426D2700AAC274 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DD9523426D2700AAC274 /* SceneDelegate.swift */; };
 		F2B9DD9823426D2700AAC274 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DD9723426D2700AAC274 /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D7D187E42342E4DF009B5EB4 /* Stewart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stewart.swift; sourceTree = "<group>"; };
 		F2B9DD9023426D2700AAC274 /* Core Motion Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Core Motion Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2B9DD9323426D2700AAC274 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F2B9DD9523426D2700AAC274 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				F2B9DD9723426D2700AAC274 /* ViewController.swift */,
 				F2B9DDA7234278D300AAC274 /* Circle.swift */,
 				F2B9DDA923428DB200AAC274 /* Utilities.swift */,
+				D7D187E42342E4DF009B5EB4 /* Stewart.swift */,
 				F2B9DD9923426D2700AAC274 /* Main.storyboard */,
 				F2B9DD9C23426D2900AAC274 /* Assets.xcassets */,
 				F2B9DD9E23426D2900AAC274 /* LaunchScreen.storyboard */,
@@ -146,6 +149,7 @@
 			files = (
 				F2B9DD9823426D2700AAC274 /* ViewController.swift in Sources */,
 				F2B9DDA8234278D300AAC274 /* Circle.swift in Sources */,
+				D7D187E52342E4DF009B5EB4 /* Stewart.swift in Sources */,
 				F2B9DDAA23428DB200AAC274 /* Utilities.swift in Sources */,
 				F2B9DD9423426D2700AAC274 /* AppDelegate.swift in Sources */,
 				F2B9DD9623426D2700AAC274 /* SceneDelegate.swift in Sources */,
@@ -293,13 +297,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PTG3LAJADS;
+				DEVELOPMENT_TEAM = 8A3589TMG5;
 				INFOPLIST_FILE = "Core Motion Test/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.christopherlouie.Core-Motion-Test";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lance.Core-Motion-Test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -311,13 +315,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PTG3LAJADS;
+				DEVELOPMENT_TEAM = 8A3589TMG5;
 				INFOPLIST_FILE = "Core Motion Test/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.christopherlouie.Core-Motion-Test";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lance.Core-Motion-Test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

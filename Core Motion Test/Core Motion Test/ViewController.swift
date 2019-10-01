@@ -25,6 +25,7 @@ class ViewController: UIViewController {
      
      var screenHeight: CGFloat?
      var circleView: UIView?
+     let stewart = Stewart()
      
      override func viewDidLoad() {
           super.viewDidLoad()
@@ -59,7 +60,7 @@ class ViewController: UIViewController {
      
      func readMotionData() {
           if motionManager.isDeviceMotionAvailable {
-               motionManager.deviceMotionUpdateInterval = 1.0 / 100.0 // 60 Hz
+               motionManager.deviceMotionUpdateInterval = 1.0 / 100.0// 100 Hz
                motionManager.startDeviceMotionUpdates(to: .main) { (data, error) in
                     
                     guard let data = data, error == nil else {
@@ -113,6 +114,8 @@ class ViewController: UIViewController {
                     
                     self.xAngleLabel.text = "x: \(Int(-cleanedPitch))°"
                     self.yAngleLabel.text = "y: \(Int(-cleanedRoll))°"
+                    
+                    self.stewart.motorAngles(xAngle: (Double(-cleanedPitch) * Double.pi/180.0), yAngle: Double(-cleanedRoll) * Double.pi/180.0)
                     
                     let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
                     
