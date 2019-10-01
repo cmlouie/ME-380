@@ -79,9 +79,17 @@ class ViewController: UIViewController {
                     }
                     else if pitch > self.maxPitchAngle {
                          cleanedPitch = self.maxPitchAngle
+                         let generator = UIImpactFeedbackGenerator(style: .heavy)
+                         generator.prepare()
+                         generator.impactOccurred()
+                         print("BUZZ")
                     }
                     else {
                          cleanedPitch = -self.maxPitchAngle
+                         let generator = UIImpactFeedbackGenerator(style: .heavy)
+                         generator.prepare()
+                         generator.impactOccurred()
+                         print("BUZZ")
                     }
                     
                     // Cleaning roll values
@@ -90,9 +98,17 @@ class ViewController: UIViewController {
                     }
                     else if roll > self.maxRollAngle {
                          cleanedRoll = self.maxRollAngle
+                         let generator = UIImpactFeedbackGenerator(style: .heavy)
+                         generator.prepare()
+                         generator.impactOccurred()
+                         print("BUZZ")
                     }
                     else {
                          cleanedRoll = -self.maxRollAngle
+                         let generator = UIImpactFeedbackGenerator(style: .heavy)
+                         generator.prepare()
+                         generator.impactOccurred()
+                         print("BUZZ")
                     }
                     
                     self.xAngleLabel.text = "x: \(Int(-cleanedPitch))°"
