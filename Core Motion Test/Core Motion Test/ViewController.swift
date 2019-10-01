@@ -19,12 +19,15 @@ class ViewController: UIViewController {
      let circleDiameter: CGFloat = 50.0
      let circleMidDiameter: CGFloat = 60.0
      let circleBorderDiameter: CGFloat = 75.0
+     let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0
      
      let maxPitchAngle: Double = 45.0
      let maxRollAngle: Double = 45.0
      
      var screenHeight: CGFloat?
      var circleView: UIView?
+     
+     let hapticGenerator = UISelectionFeedbackGenerator()
      
      override func viewDidLoad() {
           super.viewDidLoad()
@@ -59,7 +62,7 @@ class ViewController: UIViewController {
      
      func readMotionData() {
           if motionManager.isDeviceMotionAvailable {
-               motionManager.deviceMotionUpdateInterval = 1.0 / 100.0 // 60 Hz
+               motionManager.deviceMotionUpdateInterval = sensorUpdateFrequency
                motionManager.startDeviceMotionUpdates(to: .main) { (data, error) in
                     
                     guard let data = data, error == nil else {
@@ -79,17 +82,13 @@ class ViewController: UIViewController {
                     }
                     else if pitch > self.maxPitchAngle {
                          cleanedPitch = self.maxPitchAngle
-                         let generator = UIImpactFeedbackGenerator(style: .heavy)
-                         generator.prepare()
-                         generator.impactOccurred()
-                         print("BUZZ")
+                         self.hapticGenerator.prepare()
+                         self.hapticGenerator.selectionChanged()
                     }
                     else {
                          cleanedPitch = -self.maxPitchAngle
-                         let generator = UIImpactFeedbackGenerator(style: .heavy)
-                         generator.prepare()
-                         generator.impactOccurred()
-                         print("BUZZ")
+                         self.hapticGenerator.prepare()
+                         self.hapticGenerator.selectionChanged()
                     }
                     
                     // Cleaning roll values
@@ -98,19 +97,16 @@ class ViewController: UIViewController {
                     }
                     else if roll > self.maxRollAngle {
                          cleanedRoll = self.maxRollAngle
-                         let generator = UIImpactFeedbackGenerator(style: .heavy)
-                         generator.prepare()
-                         generator.impactOccurred()
-                         print("BUZZ")
+                         self.hapticGenerator.prepare()
+                         self.hapticGenerator.selectionChanged()
                     }
                     else {
                          cleanedRoll = -self.maxRollAngle
-                         let generator = UIImpactFeedbackGenerator(style: .heavy)
-                         generator.prepare()
-                         generator.impactOccurred()
-                         print("BUZZ")
+                         self.hapticGenerator.prepare()
+                         self.hapticGenerator.selectionChanged()
                     }
                     
+                    print("x: \(-cleanedPitch), y: \(-cleanedRoll)")
                     self.xAngleLabel.text = "x: \(Int(-cleanedPitch))°"
                     self.yAngleLabel.text = "y: \(Int(-cleanedRoll))°"
                     
