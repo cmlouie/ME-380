@@ -64,7 +64,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "54"
             endingLineNumber = "54"
-            landmarkName = "init()"
+            landmarkName = "motorAngles(xAngle:yAngle:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -21,10 +21,10 @@ class ViewController: UIViewController {
      let circleDiameter: CGFloat = 50.0
      let circleMidDiameter: CGFloat = 60.0
      let circleBorderDiameter: CGFloat = 75.0
-     let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // Seconds
+     let sensorUpdateFrequency: TimeInterval = 1 // Seconds
      
-     let maxPitchAngle: Double = 15.0
-     let maxRollAngle: Double = 15.0
+     let maxPitchAngle: Double = 13.0
+     let maxRollAngle: Double = 10.0
      
      var screenHeight: CGFloat?
      var circleView: UIView?
@@ -45,10 +45,10 @@ class ViewController: UIViewController {
           motionManager.stopDeviceMotionUpdates()
      }
      
-     func writeCharacteristic(value: UInt64) {
+     func writeCharacteristic(value: String) {
           if let peripheral = arduinoPeripheral {
                if let txCharacteristic = txCharacteristic {
-                    let data = Data(bytes: [value], count: 8)
+                    let data = value.data(using: .utf8)!
                     peripheral.writeValue(data, for: txCharacteristic, type: .withoutResponse)
                }
           }
@@ -135,11 +135,11 @@ class ViewController: UIViewController {
                     
                     let stringMotorAngles = cleanedMotorAngles.map({String(format: "%03d", $0)})
                     let combinedMotorAngles = stringMotorAngles.joined(separator: "")
+                    let formattedMotorAngles = "<" + combinedMotorAngles + ">"
                     
-                    self.writeCharacteristic(value: UInt64(combinedMotorAngles)!)
+                    self.writeCharacteristic(value: formattedMotorAngles)
                     print(stringMotorAngles)
-                    print(UInt64(combinedMotorAngles)!)
-                    ///
+                    print(formattedMotorAngles)
                     
                     let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
                     
