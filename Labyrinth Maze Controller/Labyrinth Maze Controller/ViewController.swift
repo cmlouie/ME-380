@@ -29,14 +29,14 @@ class ViewController: UIViewController {
     var rotationSpeed: Int = 1 {
         didSet {
             stepperNumber = Int("\(rotationDirection)\(String(format: "%02d", rotationSpeed))") ?? 101
-            writeCharacteristic(value: UInt8(stepperNumber))
+            writeCharacteristic(value: UInt64(stepperNumber))
             print(stepperNumber)
         }
     }
     var rotationDirection: Int = 1 {
         didSet {
             stepperNumber = Int("\(rotationDirection)\(String(format: "%02d", rotationSpeed))") ?? 101
-            writeCharacteristic(value: UInt8(stepperNumber))
+            writeCharacteristic(value: UInt64(stepperNumber))
             print(stepperNumber)
         }
     }
@@ -102,19 +102,20 @@ class ViewController: UIViewController {
 //        }
 //    }
     
-    func writeValue(data: String) {
-        let valueString = (data as NSString).data(using: String.Encoding.utf8.rawValue)
-        if let peripheral = arduinoPeripheral {
-            if let txCharacteristic = txCharacteristic {
-                peripheral.writeValue(valueString!, for: txCharacteristic, type: .withoutResponse)
-            }
-        }
-    }
+//    func writeValue(data: String) {
+//        let valueString = (data as NSString).data(using: String.Encoding.utf8.rawValue)
+//        if let peripheral = arduinoPeripheral {
+//            if let txCharacteristic = txCharacteristic {
+//                peripheral.writeValue(valueString!, for: txCharacteristic, type: .withoutResponse)
+//            }
+//        }
+//    }
     
-    func writeCharacteristic(value: UInt8) {
+    func writeCharacteristic(value: UInt64) {
         if let peripheral = arduinoPeripheral {
             if let txCharacteristic = txCharacteristic {
-                let data = Data(_: [value])
+//                let data = Data(_: [value])
+                let data = Data(bytes: [value], count: 8)
                 peripheral.writeValue(data, for: txCharacteristic, type: .withoutResponse)
             }
         }

@@ -51,6 +51,8 @@
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>ME 380 Project</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -8,9 +8,11 @@
 
 import UIKit
 import CoreMotion
+import CoreBluetooth
 
 class ViewController: UIViewController {
      
+     @IBOutlet weak var backButton: UIButton!
      @IBOutlet weak var xAngleLabel: UILabel!
      @IBOutlet weak var yAngleLabel: UILabel!
      
@@ -19,10 +21,10 @@ class ViewController: UIViewController {
      let circleDiameter: CGFloat = 50.0
      let circleMidDiameter: CGFloat = 60.0
      let circleBorderDiameter: CGFloat = 75.0
-     let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // 100 Hz
+     let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // Seconds
      
-     let maxPitchAngle: Double = 45.0
-     let maxRollAngle: Double = 45.0
+     let maxPitchAngle: Double = 15.0
+     let maxRollAngle: Double = 15.0
      
      var screenHeight: CGFloat?
      var circleView: UIView?
@@ -36,6 +38,20 @@ class ViewController: UIViewController {
           readMotionData()
           screenHeight = self.view.frame.size.height
           setupCircles()
+     }
+     
+     @IBAction func backButtonPressed(_ sender: UIButton) {
+          navigationController?.popViewController(animated: true)
+          motionManager.stopDeviceMotionUpdates()
+     }
+     
+     func writeCharacteristic(value: UInt64) {
+          if let peripheral = arduinoPeripheral {
+               if let txCharacteristic = txCharacteristic {
+                    let data = Data(bytes: [value], count: 8)
+                    peripheral.writeValue(data, for: txCharacteristic, type: .withoutResponse)
+               }
+          }
      }
      
      func setupCircles() {
@@ -107,11 +123,23 @@ class ViewController: UIViewController {
                          self.hapticGenerator.selectionChanged()
                     }
                     
-                    print("x: \(-cleanedPitch), y: \(-cleanedRoll)")
+//                    print("x: \(-cleanedPitch), y: \(-cleanedRoll)")
                     self.xAngleLabel.text = "x: \(Int(-cleanedPitch))°"
                     self.yAngleLabel.text = "y: \(Int(-cleanedRoll))°"
                     
-                    self.stewart.motorAngles(xAngle: (Double(-cleanedPitch) * Double.pi/180.0), yAngle: Double(-cleanedRoll) * Double.pi/180.0)
+                    let motorRadianAngles = self.stewart.motorAngles(xAngle: (Double(-cleanedPitch) * Double.pi/180.0), yAngle: Double(-cleanedRoll) * Double.pi/180.0)
+                    
+                    /// Convert motor angles to ble readable format
+                    let motorDegreeAngles = motorRadianAngles.map({$0 * (180.0 / Double.pi)})
+                    let cleanedMotorAngles = motorDegreeAngles.map({Int(Double($0).rounded())})
+                    
+                    let stringMotorAngles = cleanedMotorAngles.map({String(format: "%03d", $0)})
+                    let combinedMotorAngles = stringMotorAngles.joined(separator: "")
+                    
+                    self.writeCharacteristic(value: UInt64(combinedMotorAngles)!)
+                    print(stringMotorAngles)
+                    print(UInt64(combinedMotorAngles)!)
+                    ///
                     
                     let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
                     

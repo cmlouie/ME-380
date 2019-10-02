@@ -71,7 +71,11 @@ class Stewart {
             );
             
             motorAngles.append(asin(L/(sqrt(M*M + N*N))) - atan(N/M))
-            print(String(format: "Motor %d : %f", i + 1, motorAngles[i] * (180.0 / Double.pi)))
+            
+            if motorAngles[i] <= 0.0 {
+                motorAngles[i] = 2 * Double.pi + motorAngles[i]
+            }
+//            print(String(format: "Motor %d : %f", i + 1, motorAngles[i] * (180.0 / Double.pi)))
             
         }
         return motorAngles
