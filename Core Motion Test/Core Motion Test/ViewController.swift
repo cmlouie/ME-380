@@ -37,7 +37,7 @@ class ViewController: UIViewController {
           
           readMotionData()
           screenHeight = self.view.frame.size.height
-          setupCircles()
+//          setupCircles()
      }
      
      @IBAction func backButtonPressed(_ sender: UIButton) {
@@ -52,6 +52,26 @@ class ViewController: UIViewController {
                     peripheral.writeValue(data, for: txCharacteristic, type: .withoutResponse)
                }
           }
+     }
+     
+     @IBAction func middleClick(_ sender: Any) {
+          self.writeCharacteristic(value: "0")
+     }
+     
+     @IBAction func leftClick(_ sender: Any) {
+          self.writeCharacteristic(value: "1")
+     }
+     
+     @IBAction func rightClick(_ sender: Any) {
+          self.writeCharacteristic(value: "2")
+     }
+     
+     @IBAction func upClick(_ sender: Any) {
+          self.writeCharacteristic(value: "3")
+     }
+     
+     @IBAction func downClick(_ sender: Any) {
+          self.writeCharacteristic(value: "4")
      }
      
      func setupCircles() {
@@ -137,16 +157,16 @@ class ViewController: UIViewController {
                     let combinedMotorAngles = stringMotorAngles.joined(separator: "")
                     let formattedMotorAngles = "<" + combinedMotorAngles + ">"
                     
-                    self.writeCharacteristic(value: formattedMotorAngles)
+                    // self.writeCharacteristic(value: formattedMotorAngles)
                     print(stringMotorAngles)
                     print(formattedMotorAngles)
                     
-                    let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
-                    
-                    let circleRollDisplacement = Utilities.map(minRange: -self.maxRollAngle, maxRange: self.maxRollAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedRoll)
-                    
-                    // Move the red circle according to the attitude pitch and roll
-                    self.circleView?.frame.origin = CGPoint(x: self.view.frame.size.width/2 - self.circleDiameter/2 - CGFloat(circlePitchDisplacement), y: self.view.frame.size.height/2 - self.circleDiameter/2 + CGFloat(circleRollDisplacement))
+//                    let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
+//                    
+//                    let circleRollDisplacement = Utilities.map(minRange: -self.maxRollAngle, maxRange: self.maxRollAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedRoll)
+//
+//                    // Move the red circle according to the attitude pitch and roll
+//                    self.circleView?.frame.origin = CGPoint(x: self.view.frame.size.width/2 - self.circleDiameter/2 - CGFloat(circlePitchDisplacement), y: self.view.frame.size.height/2 - self.circleDiameter/2 + CGFloat(circleRollDisplacement))
                }
           }
      }

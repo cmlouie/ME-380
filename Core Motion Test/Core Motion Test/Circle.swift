@@ -19,12 +19,12 @@ class Circle: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        let circlePath = UIBezierPath(ovalIn: self.bounds)
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.path = circlePath.cgPath
-        shapeLayer.fillColor = UIColor.red.cgColor
-        
-        layer.addSublayer(shapeLayer)
+//        let circlePath = UIBezierPath(ovalIn: self.bounds)
+//        let shapeLayer = CAShapeLayer()
+//        shapeLayer.path = circlePath.cgPath
+//        shapeLayer.fillColor = UIColor.red.cgColor
+//
+//        layer.addSublayer(shapeLayer)
     }
     
 
