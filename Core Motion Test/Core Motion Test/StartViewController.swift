@@ -31,7 +31,7 @@ class StartViewController: UIViewController {
         bluetoothStatusLabel.text = "Searching for bluetooth device..."
         centralManager = CBCentralManager(delegate: self, queue: nil)
         
-        startButton.isEnabled = false
+        startButton.isEnabled = true
     }
     
     

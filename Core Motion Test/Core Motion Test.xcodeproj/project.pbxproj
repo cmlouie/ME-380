@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D7D187E52342E4DF009B5EB4 /* Stewart.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D187E42342E4DF009B5EB4 /* Stewart.swift */; };
 		F28D409223440200004D4B8F /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F28D409123440200004D4B8F /* StartViewController.swift */; };
+		F28D40D62346A7AF004D4B8F /* Arrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F28D40D52346A7AF004D4B8F /* Arrow.swift */; };
 		F2B9DD9423426D2700AAC274 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DD9323426D2700AAC274 /* AppDelegate.swift */; };
 		F2B9DD9623426D2700AAC274 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DD9523426D2700AAC274 /* SceneDelegate.swift */; };
 		F2B9DD9823426D2700AAC274 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DD9723426D2700AAC274 /* ViewController.swift */; };
@@ -22,6 +23,7 @@
 /* Begin PBXFileReference section */
 		D7D187E42342E4DF009B5EB4 /* Stewart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stewart.swift; sourceTree = "<group>"; };
 		F28D409123440200004D4B8F /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		F28D40D52346A7AF004D4B8F /* Arrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arrow.swift; sourceTree = "<group>"; };
 		F2B9DD9023426D2700AAC274 /* Core Motion Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Core Motion Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2B9DD9323426D2700AAC274 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F2B9DD9523426D2700AAC274 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				F28D409123440200004D4B8F /* StartViewController.swift */,
 				F2B9DD9723426D2700AAC274 /* ViewController.swift */,
 				F2B9DDA7234278D300AAC274 /* Circle.swift */,
+				F28D40D52346A7AF004D4B8F /* Arrow.swift */,
 				F2B9DDA923428DB200AAC274 /* Utilities.swift */,
 				D7D187E42342E4DF009B5EB4 /* Stewart.swift */,
 				F2B9DD9923426D2700AAC274 /* Main.storyboard */,
@@ -151,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2B9DD9823426D2700AAC274 /* ViewController.swift in Sources */,
+				F28D40D62346A7AF004D4B8F /* Arrow.swift in Sources */,
 				F28D409223440200004D4B8F /* StartViewController.swift in Sources */,
 				F2B9DDA8234278D300AAC274 /* Circle.swift in Sources */,
 				D7D187E52342E4DF009B5EB4 /* Stewart.swift in Sources */,
@@ -301,13 +305,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8A3589TMG5;
+				DEVELOPMENT_TEAM = PTG3LAJADS;
 				INFOPLIST_FILE = "Core Motion Test/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.lancegomes.Core-Motion-Test";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.christopherlouie.Core-Motion-Test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -319,13 +323,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8A3589TMG5;
+				DEVELOPMENT_TEAM = PTG3LAJADS;
 				INFOPLIST_FILE = "Core Motion Test/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.lancegomes.Core-Motion-Test";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.christopherlouie.Core-Motion-Test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
