@@ -31,7 +31,12 @@ class StartViewController: UIViewController {
         bluetoothStatusLabel.text = "Searching for bluetooth device..."
         centralManager = CBCentralManager(delegate: self, queue: nil)
         
-        startButton.isEnabled = true
+        startButton.setBackgroundColor(color: .systemGreen, forState: .normal)
+        startButton.setBackgroundColor(color: .systemGray, forState: .disabled)
+        startButton.setTitle("Start", for: .normal)
+        startButton.setTitleColor(.white, for: .normal)
+        startButton.layer.cornerRadius = 30
+        startButton.isEnabled = false
     }
     
     
@@ -39,12 +44,16 @@ class StartViewController: UIViewController {
 
 extension StartViewController: CBCentralManagerDelegate {
     
+    func scanForBLEDevice() {
+        // Look for our specific bluetooth device
+        centralManager.scanForPeripherals(withServices: [hm10ServiceCBUUID], options: nil)
+    }
+    
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
             bluetoothStatusLabel.text = "Searching for bluetooth device..."
             
-            // Look for our specific bluetooth device
-            centralManager.scanForPeripherals(withServices: [hm10ServiceCBUUID], options: nil)
+            scanForBLEDevice()
         }
         else {
             bluetoothStatusLabel.text = "Turn on bluetooth to connect to devices."
@@ -67,9 +76,16 @@ extension StartViewController: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         print("Connected to \(peripheral.name ?? "HM-10")) peripheral!")
-        bluetoothStatusLabel.text = "Connected to \(peripheral.name ?? "HM-10") peripheral."
+        bluetoothStatusLabel.text = "Connected to Stewart Platform."
         arduinoPeripheral!.discoverServices(nil)
         startButton.isEnabled = true
+    }
+    
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        print("Disconnected from \(peripheral.name ?? "HM-10") peripheral.")
+        bluetoothStatusLabel.text = "Searching for bluetooth device..."
+        startButton.isEnabled = false
+        scanForBLEDevice()
     }
     
 }
@@ -140,4 +156,18 @@ extension StartViewController: CBPeripheralDelegate {
         print("Message was sent to Arduino!")
     }
     
+}
+
+extension UIButton {
+    func setBackgroundColor(color: UIColor, forState: UIControl.State) {
+        self.clipsToBounds = true  // add this to maintain corner radius
+        UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
+        if let context = UIGraphicsGetCurrentContext() {
+            context.setFillColor(color.cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
+            let colorImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            self.setBackgroundImage(colorImage, for: forState)
+        }
+    }
 }

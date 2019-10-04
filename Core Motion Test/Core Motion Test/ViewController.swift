@@ -52,7 +52,7 @@ class ViewController: UIViewController {
      
      // Haptic feedback
      let tiltHapticGenerator = UISelectionFeedbackGenerator()
-     let buttonHapticGenerator = UIImpactFeedbackGenerator()
+     let buttonHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
      
      override func viewDidLoad() {
           super.viewDidLoad()
