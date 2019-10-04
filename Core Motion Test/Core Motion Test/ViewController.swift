@@ -195,7 +195,7 @@ class ViewController: UIViewController {
                print("Up arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "3")
+               self.writeCharacteristic(value: "4")
           }
      }
      
@@ -204,7 +204,7 @@ class ViewController: UIViewController {
                print("Left arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "1")
+               self.writeCharacteristic(value: "2")
           }
      }
      
@@ -213,7 +213,7 @@ class ViewController: UIViewController {
                print("Down arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "4")
+               self.writeCharacteristic(value: "3")
           }
      }
      
@@ -222,7 +222,7 @@ class ViewController: UIViewController {
                print("Right arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "2")
+               self.writeCharacteristic(value: "1")
           }
      }
      
