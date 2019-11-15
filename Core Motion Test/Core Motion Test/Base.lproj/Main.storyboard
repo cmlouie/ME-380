@@ -85,12 +85,22 @@
                                     <action selector="backButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KL4-Jp-dKw"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fec-hU-ye3">
+                                <rect key="frame" x="634" y="20" width="198" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Switch to gryo controls"/>
+                                <connections>
+                                    <action selector="controlTypeButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="C8i-Fa-o9l"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="H7B-Y2-JhG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="7Ao-84-gYX"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fOv-GE-BbF" secondAttribute="trailing" constant="75" id="8R7-Qz-IiK"/>
                             <constraint firstItem="XVg-Wr-Ueb" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="LUf-tF-AqG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fec-hU-ye3" secondAttribute="trailing" constant="20" id="VSy-HQ-qUE"/>
+                            <constraint firstItem="fec-hU-ye3" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="VlY-36-SDE"/>
                             <constraint firstItem="XVg-Wr-Ueb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="75" id="YAY-JV-zM0"/>
                             <constraint firstItem="H7B-Y2-JhG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="bTt-C5-SMg"/>
                             <constraint firstItem="fOv-GE-BbF" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="p4E-0X-5K8"/>
@@ -100,13 +110,14 @@
                     <navigationItem key="navigationItem" id="W9Z-N8-3sU"/>
                     <connections>
                         <outlet property="backButton" destination="H7B-Y2-JhG" id="H0g-bL-V2n"/>
+                        <outlet property="controlTypeButton" destination="fec-hU-ye3" id="PFc-Tv-O2i"/>
                         <outlet property="xAngleLabel" destination="XVg-Wr-Ueb" id="ceL-wJ-l71"/>
                         <outlet property="yAngleLabel" destination="fOv-GE-BbF" id="O7v-zh-rcJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="911" y="106"/>
+            <point key="canvasLocation" x="910.71428571428567" y="105.79710144927537"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="y7X-jQ-33v">
