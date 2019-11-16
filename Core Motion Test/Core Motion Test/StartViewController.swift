@@ -22,7 +22,7 @@ class StartViewController: UIViewController {
     private let hm10ServiceCBUUIDTx = CBUUID(string: "FFE1")
     
     var centralManager: CBCentralManager!
-    var rxCharacteristic: CBCharacteristic?
+    var rxCharacteristic: CBCharacteristic!
     var characteristicASCIIValue = NSString()
     
     override func viewDidLoad() {
@@ -144,6 +144,7 @@ extension StartViewController: CBPeripheralDelegate {
             if characteristic == rxCharacteristic {
                 if let ASCIIstring = NSString(data: characteristic.value!, encoding: String.Encoding.utf8.rawValue) {
                     characteristicASCIIValue = ASCIIstring
+                    print(ASCIIstring)
                 }
             }
         }
