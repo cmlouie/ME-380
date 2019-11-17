@@ -278,16 +278,16 @@ class ViewController: UIViewController {
                          self.yAngleLabel.text = "y: \(Int(-cleanedRoll))°"
                          
 //                         let motorRadianAngles = self.stewart.motorAngles(xAngle: (Double(-cleanedPitch) * Double.pi/180.0), yAngle: Double(-cleanedRoll) * Double.pi/180.0)
-                         
-                         /// Convert motor angles to ble readable format
+//                         
+//                         / Convert motor angles to ble readable format
 //                         let motorDegreeAngles = motorRadianAngles.map({$0 * (180.0 / Double.pi)})
 //                         let cleanedMotorAngles = motorDegreeAngles.map({Int(Double($0).rounded())})
-                         
+//                         
 //                         let stringMotorAngles = cleanedMotorAngles.map({String(format: "%03d", $0)})
 //                         let combinedMotorAngles = stringMotorAngles.joined(separator: "")
 //                         let formattedMotorAngles = "<" + combinedMotorAngles + ">"
-                         
-                         // self.writeCharacteristic(value: formattedMotorAngles)
+//                         
+//                          self.writeCharacteristic(value: formattedMotorAngles)
 //                         print(stringMotorAngles)
 //                         print(formattedMotorAngles)
                          
