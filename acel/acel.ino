@@ -4,7 +4,7 @@
 
 #include <SoftwareSerial.h>
 
-SoftwareSerial HM10(3,4);
+//SoftwareSerial Serial1(3,4);
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     #include "Wire.h"
@@ -49,7 +49,7 @@ void setup() {
   // Serial1 is pins 19 RX and 18 TX
   // RX from bluetooth goes to 19
   // TX from bluetooth goes to 18
-  HM10.begin(9600);
+  Serial1.begin(9600);
   Serial.begin(9600);
 
   for (int i = 0; i < 6; i ++) {
@@ -92,6 +92,11 @@ void setup() {
 void loop() {
 
   increment++;
+
+  if (Serial1.available() > 0) {
+    Serial.write(Serial1.read());
+  }
+  
   if (!dmpReady) return;
 
   while (!mpuInterrupt && fifoCount < packetSize) {
@@ -138,9 +143,9 @@ void loop() {
         bool positivePitch = ypr[1] >= 0;
         bool positiveRoll = ypr[2] >= 0;
         String data = String(positivePitch ? "+" : "") + String(ypr[1] * 180/M_PI) + String(positiveRoll ? "+" : "") + String(ypr[2] * 180/M_PI);
-        Serial.println(data);
-        if (increment == 5) {
-          HM10.write(data.c_str());
+        // Serial.println(data);
+        if (increment >= 8) {
+          Serial1.write(data.c_str());
           increment = 0;
         }
     }
