@@ -26,7 +26,7 @@
 		F22C28E523812C8C00EBBD69 /* BluetoothSerial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSerial.swift; sourceTree = "<group>"; };
 		F28D409123440200004D4B8F /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		F28D40D52346A7AF004D4B8F /* Arrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arrow.swift; sourceTree = "<group>"; };
-		F2B9DD9023426D2700AAC274 /* Core Motion Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Core Motion Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2B9DD9023426D2700AAC274 /* Stewart Platform Controller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stewart Platform Controller.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2B9DD9323426D2700AAC274 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F2B9DD9523426D2700AAC274 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		F2B9DD9723426D2700AAC274 /* ViewController.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 		F2B9DD9123426D2700AAC274 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F2B9DD9023426D2700AAC274 /* Core Motion Test.app */,
+				F2B9DD9023426D2700AAC274 /* Stewart Platform Controller.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,9 +112,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F2B9DD8F23426D2700AAC274 /* Core Motion Test */ = {
+		F2B9DD8F23426D2700AAC274 /* Stewart Platform Controller */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F2B9DDA423426D2900AAC274 /* Build configuration list for PBXNativeTarget "Core Motion Test" */;
+			buildConfigurationList = F2B9DDA423426D2900AAC274 /* Build configuration list for PBXNativeTarget "Stewart Platform Controller" */;
 			buildPhases = (
 				F2B9DD8C23426D2700AAC274 /* Sources */,
 				F2B9DD8D23426D2700AAC274 /* Frameworks */,
@@ -124,9 +124,9 @@
 			);
 			dependencies = (
 			);
-			name = "Core Motion Test";
+			name = "Stewart Platform Controller";
 			productName = "Core Motion Test";
-			productReference = F2B9DD9023426D2700AAC274 /* Core Motion Test.app */;
+			productReference = F2B9DD9023426D2700AAC274 /* Stewart Platform Controller.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -144,7 +144,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F2B9DD8B23426D2700AAC274 /* Build configuration list for PBXProject "Core Motion Test" */;
+			buildConfigurationList = F2B9DD8B23426D2700AAC274 /* Build configuration list for PBXProject "Stewart Platform Controller" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -157,7 +157,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F2B9DD8F23426D2700AAC274 /* Core Motion Test */,
+				F2B9DD8F23426D2700AAC274 /* Stewart Platform Controller */,
 			);
 		};
 /* End PBXProject section */
@@ -369,7 +369,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F2B9DD8B23426D2700AAC274 /* Build configuration list for PBXProject "Core Motion Test" */ = {
+		F2B9DD8B23426D2700AAC274 /* Build configuration list for PBXProject "Stewart Platform Controller" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F2B9DDA223426D2900AAC274 /* Debug */,
@@ -378,7 +378,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F2B9DDA423426D2900AAC274 /* Build configuration list for PBXNativeTarget "Core Motion Test" */ = {
+		F2B9DDA423426D2900AAC274 /* Build configuration list for PBXNativeTarget "Stewart Platform Controller" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F2B9DDA523426D2900AAC274 /* Debug */,
