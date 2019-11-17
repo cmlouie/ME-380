@@ -2,6 +2,10 @@
 
 #include "MPU6050_6Axis_MotionApps20.h"
 
+#include <SoftwareSerial.h>
+
+SoftwareSerial HM10(3,4);
+
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     #include "Wire.h"
 #endif
@@ -18,6 +22,7 @@ uint8_t devStatus;      // return status after each device operation (0 = succes
 uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
 uint16_t fifoCount;     // count of all bytes currently in FIFO
 uint8_t fifoBuffer[64]; // FIFO storage buffer
+int increment = 0;
 
 
 // orientation/motion vars
@@ -44,7 +49,7 @@ void setup() {
   // Serial1 is pins 19 RX and 18 TX
   // RX from bluetooth goes to 19
   // TX from bluetooth goes to 18
-  Serial1.begin(9600);
+  HM10.begin(9600);
   Serial.begin(9600);
 
   for (int i = 0; i < 6; i ++) {
@@ -63,10 +68,6 @@ void setup() {
 
   mpu.initialize();
   Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
-
-  while (Serial1.available() && Serial1.read()); // empty buffer
-  while (!Serial1.available());                 // wait for data
-  while (Serial1.available() && Serial1.read()); // empty buffer again
   
   devStatus = mpu.dmpInitialize();
   mpu.setXGyroOffset(0);
@@ -90,6 +91,7 @@ void setup() {
 
 void loop() {
 
+  increment++;
   if (!dmpReady) return;
 
   while (!mpuInterrupt && fifoCount < packetSize) {
@@ -127,6 +129,7 @@ void loop() {
         // (this lets us immediately read more without waiting for an interrupt)
         fifoCount -= packetSize;
 
+
         // display Euler angles in degrees
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
@@ -134,10 +137,12 @@ void loop() {
 
         bool positivePitch = ypr[1] >= 0;
         bool positiveRoll = ypr[2] >= 0;
-
         String data = String(positivePitch ? "+" : "") + String(ypr[1] * 180/M_PI) + String(positiveRoll ? "+" : "") + String(ypr[2] * 180/M_PI);
         Serial.println(data);
-        Serial1.println(data);
+        if (increment == 5) {
+          HM10.write(data.c_str());
+          increment = 0;
+        }
     }
 }
 
