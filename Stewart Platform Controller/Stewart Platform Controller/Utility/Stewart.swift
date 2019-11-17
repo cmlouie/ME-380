@@ -1,6 +1,6 @@
 //
 //  Stewart.swift
-//  Labyrinth Maze Controller
+//  Stewart Platform Controller
 //
 //  Created by Lance Gomes on 2019-09-30.
 //  Copyright © 2019 Christopher Louie. All rights reserved.

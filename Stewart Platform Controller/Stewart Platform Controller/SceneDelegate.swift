@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  Core Motion Test
+//  Stewart Platform Controller
 //
 //  Created by Christopher Louie on 2019-09-30.
 //  Copyright © 2019 Christopher Louie. All rights reserved.

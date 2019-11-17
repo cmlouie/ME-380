@@ -26,7 +26,7 @@
 		F22C28E523812C8C00EBBD69 /* BluetoothSerial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSerial.swift; sourceTree = "<group>"; };
 		F28D409123440200004D4B8F /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		F28D40D52346A7AF004D4B8F /* Arrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arrow.swift; sourceTree = "<group>"; };
-		F2B9DD9023426D2700AAC274 /* Stewart Platform Controller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stewart Platform Controller.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2B9DD9023426D2700AAC274 /* Deans List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Deans List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2B9DD9323426D2700AAC274 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F2B9DD9523426D2700AAC274 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		F2B9DD9723426D2700AAC274 /* ViewController.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 		F2B9DD8723426D2700AAC274 = {
 			isa = PBXGroup;
 			children = (
-				F2B9DD9223426D2700AAC274 /* Core Motion Test */,
+				F2B9DD9223426D2700AAC274 /* Stewart Platform Controller */,
 				F2B9DD9123426D2700AAC274 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,12 +88,12 @@
 		F2B9DD9123426D2700AAC274 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F2B9DD9023426D2700AAC274 /* Stewart Platform Controller.app */,
+				F2B9DD9023426D2700AAC274 /* Deans List.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F2B9DD9223426D2700AAC274 /* Core Motion Test */ = {
+		F2B9DD9223426D2700AAC274 /* Stewart Platform Controller */ = {
 			isa = PBXGroup;
 			children = (
 				F2B9DD9323426D2700AAC274 /* AppDelegate.swift */,
@@ -106,7 +106,7 @@
 				F2B9DD9E23426D2900AAC274 /* LaunchScreen.storyboard */,
 				F2B9DDA123426D2900AAC274 /* Info.plist */,
 			);
-			path = "Core Motion Test";
+			path = "Stewart Platform Controller";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,7 +126,7 @@
 			);
 			name = "Stewart Platform Controller";
 			productName = "Core Motion Test";
-			productReference = F2B9DD9023426D2700AAC274 /* Stewart Platform Controller.app */;
+			productReference = F2B9DD9023426D2700AAC274 /* Deans List.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -334,14 +334,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PTG3LAJADS;
-				INFOPLIST_FILE = "Core Motion Test/Info.plist";
+				INFOPLIST_FILE = "Stewart Platform Controller/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.christopherlouie.Core-Motion-Test";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.christopherlouie.Stewart-Platform-Controller";
+				PRODUCT_NAME = "Deans List";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -353,14 +353,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PTG3LAJADS;
-				INFOPLIST_FILE = "Core Motion Test/Info.plist";
+				INFOPLIST_FILE = "Stewart Platform Controller/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.christopherlouie.Core-Motion-Test";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.christopherlouie.Stewart-Platform-Controller";
+				PRODUCT_NAME = "Deans List";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
