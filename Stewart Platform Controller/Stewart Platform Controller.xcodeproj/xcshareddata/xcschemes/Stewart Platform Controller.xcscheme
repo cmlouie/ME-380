@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F2B9DD8F23426D2700AAC274"
-               BuildableName = "Stewart Platform Controller.app"
+               BuildableName = "Deans List.app"
                BlueprintName = "Stewart Platform Controller"
                ReferencedContainer = "container:Stewart Platform Controller.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F2B9DD8F23426D2700AAC274"
-            BuildableName = "Stewart Platform Controller.app"
+            BuildableName = "Deans List.app"
             BlueprintName = "Stewart Platform Controller"
             ReferencedContainer = "container:Stewart Platform Controller.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F2B9DD8F23426D2700AAC274"
-            BuildableName = "Stewart Platform Controller.app"
+            BuildableName = "Deans List.app"
             BlueprintName = "Stewart Platform Controller"
             ReferencedContainer = "container:Stewart Platform Controller.xcodeproj">
          </BuildableReference>

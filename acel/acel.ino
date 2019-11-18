@@ -142,7 +142,7 @@ void loop() {
 
         bool positivePitch = ypr[1] >= 0;
         bool positiveRoll = ypr[2] >= 0;
-        String data = String(positivePitch ? "+" : "") + String(ypr[1] * 180/M_PI) + String(positiveRoll ? "+" : "") + String(ypr[2] * 180/M_PI);
+        String data = String(positivePitch ? "+" : "") + String(ypr[1] * 180/M_PI) + "," + String(positiveRoll ? "+" : "") + String(ypr[2] * 180/M_PI);
         // Serial.println(data);
         if (increment >= 8) {
           Serial1.write(data.c_str());

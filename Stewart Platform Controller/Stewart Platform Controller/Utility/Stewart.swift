@@ -47,6 +47,11 @@ class Stewart {
         }
     }
     
+    
+    /// Return motor angles for a desired platform x and y angle
+    /// - Parameters:
+    ///   - xAngle: in radians
+    ///   - yAngle: in radians
     func motorAngles(xAngle: Double, yAngle: Double) -> [Double] {
         
         let (legLengths, legVectors) = self.legLengths(xAngle: xAngle, yAngle: yAngle)

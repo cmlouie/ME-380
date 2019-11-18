@@ -158,16 +158,16 @@ final class BluetoothSerial: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         connectedPeripheral!.readRSSI()
     }
     
-    /// Send a string to the device
+    /// Send a string to the BLE device
     func sendStringToDevice(_ string: String) {
         guard isReady else { return }
         
-        if let data = string.data(using: String.Encoding.utf8) {
+        if let data = string.data(using: .utf8) {
             connectedPeripheral!.writeValue(data, for: writeCharacteristic!, type: writeType)
         }
     }
     
-    /// Send an array of bytes to the device
+    /// Send an array of bytes to the BLE device
     func sendBytesToDevice(_ bytes: [UInt8]) {
         guard isReady else { return }
         
@@ -175,7 +175,7 @@ final class BluetoothSerial: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         connectedPeripheral!.writeValue(data, for: writeCharacteristic!, type: writeType)
     }
     
-    /// Send data to the device
+    /// Send data to the BLE device
     func sendDataToDevice(_ data: Data) {
         guard isReady else { return }
         

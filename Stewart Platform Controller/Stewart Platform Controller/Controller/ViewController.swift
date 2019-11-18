@@ -10,7 +10,7 @@ import UIKit
 import CoreMotion
 import CoreBluetooth
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, BluetoothSerialDelegate {
      
      @IBOutlet weak var backButton: UIButton!
      @IBOutlet weak var xAngleLabel: UILabel!
@@ -29,8 +29,29 @@ class ViewController: UIViewController {
      
      let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // Seconds
      
-     let maxPitchAngle: Double = 25.0
-     let maxRollAngle: Double = 25.0
+     let maxPitchAngle: Double = 7.0
+     let maxRollAngle: Double = 7.0
+     
+     var platformXAngle: Double = 0 {
+          didSet {
+               //               print("PLATFORM X")
+          }
+     }
+     var platformYAngle: Double = 0 {
+          didSet {
+               //               print("PLATFORM Y")
+          }
+     }
+     var phoneXAngle: Double = 0 {
+          didSet {
+               //               print("PHONE X")
+          }
+     }
+     var phoneYAngle: Double = 0 {
+          didSet {
+               //               print("PHONE Y")
+          }
+     }
      
      var showDPAD = true
      
@@ -56,6 +77,8 @@ class ViewController: UIViewController {
      
      override func viewDidLoad() {
           super.viewDidLoad()
+          
+          serial.delegate = self
           
           setupCircles(shouldShow: !showDPAD)
           setupArrows(shouldShow: showDPAD)
@@ -98,14 +121,14 @@ class ViewController: UIViewController {
      
      /// Write to bluetooth device
      /// - Parameter value: Value to write
-     func writeCharacteristic(value: String) {
-          if let peripheral = arduinoPeripheral {
-               if let txCharacteristic = txCharacteristic {
-                    let data = value.data(using: .utf8)!
-                    peripheral.writeValue(data, for: txCharacteristic, type: .withoutResponse)
-               }
-          }
-     }
+     //     func writeCharacteristic(value: String) {
+     //               if let peripheral = arduinoPeripheral {
+     //                    if let txCharacteristic = txCharacteristic {
+     //                         let data = value.data(using: .utf8)!
+     //                         peripheral.writeValue(data, for: txCharacteristic, type: .withoutResponse)
+     //                    }
+     //               }
+     //      }
      
      func setupCircles(shouldShow: Bool) {
           let circleFrame: CGRect = CGRect(x: self.view.frame.size.width/2 - circleDiameter/2, y: self.view.frame.size.height/2 - circleDiameter/2, width: circleDiameter, height: circleDiameter)
@@ -148,9 +171,9 @@ class ViewController: UIViewController {
                downArrowView = Arrow(frame: downArrowFrame)
                rightArrowView = Arrow(frame: rightArrowFrame)
                
-               leftArrowView?.rotateBy(angle: -90)
-               downArrowView?.rotateBy(angle: 180)
-               rightArrowView?.rotateBy(angle: 90)
+               leftArrowView?.rotateBy(-90)
+               downArrowView?.rotateBy(180)
+               rightArrowView?.rotateBy(90)
                
                upTap = UILongPressGestureRecognizer(target: self, action: #selector(upArrowTapped(gesture:)))
                upTap?.minimumPressDuration = 0
@@ -186,7 +209,8 @@ class ViewController: UIViewController {
                print("Home tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "0")
+               serial.sendStringToDevice("0")
+               //               self.writeCharacteristic(value: "0")
           }
      }
      
@@ -195,7 +219,7 @@ class ViewController: UIViewController {
                print("Up arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "4")
+               //               self.writeCharacteristic(value: "4")
           }
      }
      
@@ -204,7 +228,7 @@ class ViewController: UIViewController {
                print("Left arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "2")
+               //               self.writeCharacteristic(value: "2")
           }
      }
      
@@ -213,7 +237,7 @@ class ViewController: UIViewController {
                print("Down arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "3")
+               //               self.writeCharacteristic(value: "3")
           }
      }
      
@@ -222,7 +246,7 @@ class ViewController: UIViewController {
                print("Right arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               self.writeCharacteristic(value: "1")
+               //               self.writeCharacteristic(value: "1")
           }
      }
      
@@ -273,23 +297,36 @@ class ViewController: UIViewController {
                               self.tiltHapticGenerator.selectionChanged()
                          }
                          
-                         //                    print("x: \(-cleanedPitch), y: \(-cleanedRoll)")
+                         //                         print("phoneX: \(-cleanedPitch), phoneY: \(-cleanedRoll)")
                          self.xAngleLabel.text = "x: \(Int(-cleanedPitch))°"
                          self.yAngleLabel.text = "y: \(Int(-cleanedRoll))°"
+                         self.phoneXAngle = -cleanedPitch
+                         self.phoneYAngle = -cleanedRoll
                          
-//                         let motorRadianAngles = self.stewart.motorAngles(xAngle: (Double(-cleanedPitch) * Double.pi/180.0), yAngle: Double(-cleanedRoll) * Double.pi/180.0)
-//                         
-//                         / Convert motor angles to ble readable format
-//                         let motorDegreeAngles = motorRadianAngles.map({$0 * (180.0 / Double.pi)})
-//                         let cleanedMotorAngles = motorDegreeAngles.map({Int(Double($0).rounded())})
-//                         
-//                         let stringMotorAngles = cleanedMotorAngles.map({String(format: "%03d", $0)})
-//                         let combinedMotorAngles = stringMotorAngles.joined(separator: "")
-//                         let formattedMotorAngles = "<" + combinedMotorAngles + ">"
-//                         
-//                          self.writeCharacteristic(value: formattedMotorAngles)
-//                         print(stringMotorAngles)
-//                         print(formattedMotorAngles)
+                         
+                         //                         let finalAngles = self.platformToPhoneAngleDifference(phoneX: -cleanedPitch, phoneY: -cleanedRoll, platformX: self.platformXAngle, platformY: self.platformYAngle)
+                         
+                         //                         print("finalX: \(finalAngles.x), finalY: \(finalAngles.y)")
+                         //                         print(" ")
+                         
+                         
+                         
+                         //                         // TODO: Input angle difference in here instead of cleaned roll and pitch
+                         //                         let motorRadianAngles = self.stewart.motorAngles(xAngle: (Double(-cleanedPitch) * Double.pi/180.0), yAngle: Double(-cleanedRoll) * Double.pi/180.0)
+                         //
+                         //                         // Convert motor angles to ble readable format
+                         //                         let motorDegreeAngles = motorRadianAngles.map({$0 * (180.0 / Double.pi)})
+                         //                         let cleanedMotorAngles = motorDegreeAngles.map({Int(Double($0).rounded())})
+                         //
+                         //                         let stringMotorAngles = cleanedMotorAngles.map({String(format: "%03d", $0)})
+                         //                         let combinedMotorAngles = stringMotorAngles.joined(separator: "")
+                         //                         let formattedMotorAngles = "<" + combinedMotorAngles + ">"
+                         //
+                         ////                         self.writeCharacteristic(value: formattedMotorAngles)
+                         //                         serial.sendStringToDevice(formattedMotorAngles)
+                         //
+                         ////                         print(stringMotorAngles)
+                         ////                         print(formattedMotorAngles)
                          
                          let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
                          
@@ -304,12 +341,142 @@ class ViewController: UIViewController {
                motionManager.stopDeviceMotionUpdates()
           }
      }
-}
-
-extension UIView {
-     func rotateBy(angle angle: CGFloat) {
-          let radians = angle / 180.0 * CGFloat.pi
-          let rotation = self.transform.rotated(by: radians);
-          self.transform = rotation
+     
+     func extractPlatformAngles(from BLEString: String) -> (x: Double, y: Double) {
+          var platformXAngle: Double = 0
+          var platformYAngle: Double = 0
+          
+          
+          
+          var stringArray: [String] = ["",""]
+          stringArray = BLEString.components(separatedBy: ",")
+          let platformAngles = stringArray.map({ Double($0) ?? 0 })
+          
+          if platformAngles.count == 2 {
+               platformXAngle = platformAngles[0]
+               platformYAngle = platformAngles[1]
+          }
+          
+          var cleanedPitch: Double = 0.0
+          var cleanedRoll: Double = 0.0
+          
+          // Cleaning pitch values
+          if abs(platformXAngle) <= self.maxPitchAngle {
+               cleanedPitch = platformXAngle
+          }
+          else if platformXAngle > self.maxPitchAngle {
+               cleanedPitch = self.maxPitchAngle
+          }
+          else {
+               cleanedPitch = -self.maxPitchAngle
+          }
+          
+          // Cleaning roll values
+          if abs(platformYAngle) <= self.maxRollAngle {
+               cleanedRoll = platformYAngle
+          }
+          else if platformYAngle > self.maxRollAngle {
+               cleanedRoll = self.maxRollAngle
+          }
+          else {
+               cleanedRoll = -self.maxRollAngle
+          }
+          
+          return (cleanedPitch, cleanedRoll)
      }
+     
+//     func platformToPhoneAngleDifference(phoneX phoneXAngle: Double, phoneY phoneYAngle: Double, platformX platformXAngle: Double, platformY platformYAngle: Double) -> (x: Double, y: Double) {
+//          var xAngle: Double = 0
+//          var yAngle: Double = 0
+//
+//          xAngle = phoneXAngle - platformXAngle
+//          yAngle = phoneYAngle - platformYAngle
+//
+//          return (xAngle, yAngle)
+//     }
+     
+     
+     
+     
+     
+     
+     
+     // MARK: BluetoothSerialDelegate
+     
+     func serialDidChangeState() {
+          if !serial.isPoweredOn {
+               print("Disconnected from BLE device.")
+               navigationController?.popViewController(animated: true)
+               // TODO: disable button and start scanning again
+          }
+     }
+     
+     func serialDidDisconnect(_ peripheral: CBPeripheral, error: NSError?) {
+          print("Disconnected from BLE device.")
+          navigationController?.popViewController(animated: true)
+          // TODO: disable button and start scanning again
+     }
+     
+     func serialDidReceiveString(_ string: String) {
+          platformXAngle = extractPlatformAngles(from: string).x
+          platformYAngle = extractPlatformAngles(from: string).y
+          
+          print("platformX: \(platformXAngle), platformY: \(platformYAngle)")
+          print("phoneX: \(phoneXAngle), phoneY: \(phoneYAngle)")
+          
+//          let finalAngles = platformToPhoneAngleDifference(phoneX: phoneXAngle, phoneY: phoneYAngle, platformX: platformXAngle, platformY: platformYAngle)
+          
+//          print("finalX: \(finalAngles.x), finalY: \(finalAngles.y)")
+//          print(" ")
+          
+          
+//          let finalRadXAngle = finalAngles.x.toRadians()
+//          let finalRadYAngle = finalAngles.y.toRadians()
+//          let motorRadianAngles = self.stewart.motorAngles(xAngle: finalRadXAngle, yAngle: finalRadYAngle)
+          
+          
+          let phoneMotorRadians = self.stewart.motorAngles(xAngle: phoneXAngle.toRadians(), yAngle: phoneYAngle.toRadians())
+          let platformMotorRadians = self.stewart.motorAngles(xAngle: platformXAngle.toRadians(), yAngle: platformYAngle.toRadians())
+          
+          let phoneMotorDegreeAngles = phoneMotorRadians.map({$0.toDegrees()})
+          let platformMotorDegreeAngles = platformMotorRadians.map({$0.toDegrees()})
+          var subtractedMotorDegreeAngles = [Double]()
+          
+          for i in 0..<6 {
+               subtractedMotorDegreeAngles.append(phoneMotorDegreeAngles[i] - platformMotorDegreeAngles[i])
+          }
+          
+//          print(subtractedMotorDegreeAngles)
+          
+//          let cleanedPhoneMotorAngles = phoneMotorDegreeAngles.map({Int(Double($0).rounded())})
+//          let cleanedPlatformMotorAngles = platformMotorDegreeAngles.map({Int(Double($0).rounded())})
+          let cleanedSubtractedMotorAngles = subtractedMotorDegreeAngles.map({Int(Double($0).rounded())})
+          
+//          let stringPhoneMotorAngles = cleanedPhoneMotorAngles.map({String(format: "%03d", $0)})
+//          let stringPlatformMotorAngles = cleanedPlatformMotorAngles.map({String(format: "%03d", $0)})
+          let stringSubtractedMotorAngles = cleanedSubtractedMotorAngles.map({String(format: "%03d", $0)})
+          
+//          print(stringPhoneMotorAngles)
+//          print(stringPlatformMotorAngles)
+          print(stringSubtractedMotorAngles)
+          
+          // Convert motor angles to ble readable format
+//          let motorDegreeAngles = motorRadianAngles.map({$0.toDegrees()})
+//          let cleanedMotorAngles = motorDegreeAngle.map({Int(Double($0).rounded())})
+//          print(motorDegreeAngles)
+          
+          let combinedMotorAngles = stringSubtractedMotorAngles.joined(separator: "")
+          let formattedMotorAngles = "<" + combinedMotorAngles + ">"
+          
+          serial.sendStringToDevice(formattedMotorAngles)
+          
+//          print(stringMotorAngles)
+          print(formattedMotorAngles)
+          
+          print("----------")
+          
+          
+          
+     }
+     
 }

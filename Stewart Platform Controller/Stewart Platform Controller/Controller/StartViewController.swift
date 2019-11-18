@@ -35,7 +35,15 @@ class StartViewController: UIViewController, BluetoothSerialDelegate {
         startButton.setTitle("Start", for: .normal)
         startButton.setTitleColor(.white, for: .normal)
         startButton.layer.cornerRadius = 30
-        startButton.isEnabled = false
+        startButton.isEnabled = true
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Disable button if not connected
+        
+        serial.sendStringToDevice("HELLO")
     }
     
     
@@ -70,23 +78,5 @@ class StartViewController: UIViewController, BluetoothSerialDelegate {
     
     func serialIsReady(_ peripheral: CBPeripheral) {
         print("Serial is ready!")
-    }
-    
-    func serialDidReceiveString(_ string: String) {
-        print(string)
-    }
-}
-
-extension UIButton {
-    func setBackgroundColor(color: UIColor, forState: UIControl.State) {
-        self.clipsToBounds = true  // add this to maintain corner radius
-        UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        if let context = UIGraphicsGetCurrentContext() {
-            context.setFillColor(color.cgColor)
-            context.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
-            let colorImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            self.setBackgroundImage(colorImage, for: forState)
-        }
     }
 }
