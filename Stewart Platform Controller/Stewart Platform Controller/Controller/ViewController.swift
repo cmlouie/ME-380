@@ -32,26 +32,10 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      let maxPitchAngle: Double = 7.0
      let maxRollAngle: Double = 7.0
      
-     var platformXAngle: Double = 0 {
-          didSet {
-               //               print("PLATFORM X")
-          }
-     }
-     var platformYAngle: Double = 0 {
-          didSet {
-               //               print("PLATFORM Y")
-          }
-     }
-     var phoneXAngle: Double = 0 {
-          didSet {
-               //               print("PHONE X")
-          }
-     }
-     var phoneYAngle: Double = 0 {
-          didSet {
-               //               print("PHONE Y")
-          }
-     }
+     var platformXAngle: Double = 0
+     var platformYAngle: Double = 0
+     var phoneXAngle: Double = 0
+     var phoneYAngle: Double = 0
      
      var showDPAD = true
      
@@ -210,7 +194,6 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
                serial.sendStringToDevice("0")
-               //               self.writeCharacteristic(value: "0")
           }
      }
      
@@ -219,7 +202,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                print("Up arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               //               self.writeCharacteristic(value: "4")
+               serial.sendStringToDevice("4")
           }
      }
      
@@ -228,7 +211,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                print("Left arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               //               self.writeCharacteristic(value: "2")
+               serial.sendStringToDevice("2")
           }
      }
      
@@ -237,7 +220,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                print("Down arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               //               self.writeCharacteristic(value: "3")
+               serial.sendStringToDevice("3")
           }
      }
      
@@ -246,7 +229,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                print("Right arrow tapped")
                self.buttonHapticGenerator.prepare()
                self.buttonHapticGenerator.impactOccurred()
-               //               self.writeCharacteristic(value: "1")
+               serial.sendStringToDevice("1")
           }
      }
      
@@ -302,31 +285,6 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          self.yAngleLabel.text = "y: \(Int(-cleanedRoll))°"
                          self.phoneXAngle = -cleanedPitch
                          self.phoneYAngle = -cleanedRoll
-                         
-                         
-                         //                         let finalAngles = self.platformToPhoneAngleDifference(phoneX: -cleanedPitch, phoneY: -cleanedRoll, platformX: self.platformXAngle, platformY: self.platformYAngle)
-                         
-                         //                         print("finalX: \(finalAngles.x), finalY: \(finalAngles.y)")
-                         //                         print(" ")
-                         
-                         
-                         
-                         //                         // TODO: Input angle difference in here instead of cleaned roll and pitch
-                         //                         let motorRadianAngles = self.stewart.motorAngles(xAngle: (Double(-cleanedPitch) * Double.pi/180.0), yAngle: Double(-cleanedRoll) * Double.pi/180.0)
-                         //
-                         //                         // Convert motor angles to ble readable format
-                         //                         let motorDegreeAngles = motorRadianAngles.map({$0 * (180.0 / Double.pi)})
-                         //                         let cleanedMotorAngles = motorDegreeAngles.map({Int(Double($0).rounded())})
-                         //
-                         //                         let stringMotorAngles = cleanedMotorAngles.map({String(format: "%03d", $0)})
-                         //                         let combinedMotorAngles = stringMotorAngles.joined(separator: "")
-                         //                         let formattedMotorAngles = "<" + combinedMotorAngles + ">"
-                         //
-                         ////                         self.writeCharacteristic(value: formattedMotorAngles)
-                         //                         serial.sendStringToDevice(formattedMotorAngles)
-                         //
-                         ////                         print(stringMotorAngles)
-                         ////                         print(formattedMotorAngles)
                          
                          let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
                          
