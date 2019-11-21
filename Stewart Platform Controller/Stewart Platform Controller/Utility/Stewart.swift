@@ -13,8 +13,8 @@ import simd
 class Stewart {
     
     let BASE_RADIUS = 8.739
-    let PLATFORM_RADIUS = 6.523
-    let BASE_PLATFORM_RADIUS = 15.2
+    let PLATFORM_RADIUS = 5.05
+    let BASE_PLATFORM_RADIUS = 17.2
     let HORN_RADIUS = 3.0
     
     let ROD_LENGTH = 17.3
