@@ -10,6 +10,11 @@ import UIKit
 import CoreMotion
 import CoreBluetooth
 
+enum Landscape {
+     case left
+     case right
+}
+
 class ViewController: UIViewController, BluetoothSerialDelegate {
      
      // MARK: IBOutlets
@@ -20,6 +25,8 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      @IBOutlet weak var controlTypeButton: UIButton!
      
      // MARK: Constants
+     
+     var orientation: Landscape = .left
      
      let motionManager = CMMotionManager()
      let stewart = Stewart()
@@ -45,6 +52,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      var phoneYAngle: Double = 0
      
      var showDPAD = true
+     var centred = false
      
      var screenHeight: CGFloat?
      var circleView: UIView?
@@ -65,6 +73,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      // Haptic feedback
      let tiltHapticGenerator = UISelectionFeedbackGenerator()
      let buttonHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
+     let centredGenerator = UIImpactFeedbackGenerator(style: .light)
      
      // MARK: Functions
      
@@ -79,6 +88,20 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           yAngleLabel.isHidden = showDPAD
           
           screenHeight = self.view.frame.size.height
+          checkOrientationOfDevice()
+     }
+     
+     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+          super.viewWillTransition(to: size, with: coordinator)
+          checkOrientationOfDevice()
+     }
+     
+     func checkOrientationOfDevice() {
+          if UIDevice.current.orientation == .landscapeLeft {
+               orientation = .left
+          } else if UIDevice.current.orientation == .landscapeRight {
+               orientation = .right
+          }
      }
      
      @IBAction func backButtonPressed(_ sender: UIButton) {
@@ -94,6 +117,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           
           if showDPAD {
                controlTypeButton.setTitle("Switch to gyro controller", for: .normal)
+               view.backgroundColor = .systemBackground
           } else {
                controlTypeButton.setTitle("Switch to DPAD controller", for: .normal)
           }
@@ -242,8 +266,19 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          }
                          
                          let attitude = data.attitude
-                         let pitch = attitude.pitch * 180.0/Double.pi
-                         let roll = attitude.roll * 180.0/Double.pi
+                         
+                         var pitch: Double = 0
+                         var roll: Double = 0
+                         
+                         if self.orientation == .left {
+                              pitch = -(attitude.pitch * 180.0/Double.pi)
+                              roll = -(attitude.roll * 180.0/Double.pi)
+                         } else if self.orientation == .right {
+                              pitch = attitude.pitch * 180.0/Double.pi
+                              roll = attitude.roll * 180.0/Double.pi
+                         }
+                         
+                         print(roll, pitch)
                          
                          var cleanedPitch: Double = 0.0
                          var cleanedRoll: Double = 0.0
@@ -285,9 +320,27 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          self.xAngleLabel.text = "x: \(Int(-cleanedRoll))°"
                          self.yAngleLabel.text = "y: \(Int(-cleanedPitch))°"
                          
-                         
                          self.phoneXAngle = -cleanedRoll
                          self.phoneYAngle = -cleanedPitch
+                         
+                         let roundedRoll = round(cleanedRoll)
+                         let roundedPitch = round(cleanedPitch)
+                         
+                         if roundedRoll == 0 && roundedPitch == 0 && !self.centred {
+                              UIView.animate(withDuration: 0.2) {
+                                   self.view.backgroundColor = UIColor(red: 15/255, green: 227/255, blue: 111/255, alpha: 1.0)
+                              }
+                              self.centredGenerator.prepare()
+                              self.centredGenerator.impactOccurred()
+                              self.centred = true
+                         } else if roundedRoll == 0 && roundedPitch == 0 && self.centred {
+                              self.view.backgroundColor = UIColor(red: 15/255, green: 227/255, blue: 111/255, alpha: 1.0)
+                         } else {
+                              self.centred = false
+                              UIView.animate(withDuration: 0.2) {
+                                   self.view.backgroundColor = .systemBackground
+                              }
+                         }
                          
                          let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
                          

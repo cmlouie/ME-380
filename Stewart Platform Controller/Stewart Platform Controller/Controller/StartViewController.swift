@@ -35,7 +35,7 @@ class StartViewController: UIViewController, BluetoothSerialDelegate {
         startButton.setTitle("Start", for: .normal)
         startButton.setTitleColor(.white, for: .normal)
         startButton.layer.cornerRadius = 30
-        startButton.isEnabled = false
+        startButton.isEnabled = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
