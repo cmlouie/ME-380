@@ -12,10 +12,14 @@ import CoreBluetooth
 
 class ViewController: UIViewController, BluetoothSerialDelegate {
      
+     // MARK: IBOutlets
+     
      @IBOutlet weak var backButton: UIButton!
      @IBOutlet weak var xAngleLabel: UILabel!
      @IBOutlet weak var yAngleLabel: UILabel!
      @IBOutlet weak var controlTypeButton: UIButton!
+     
+     // MARK: Constants
      
      let motionManager = CMMotionManager()
      let stewart = Stewart()
@@ -31,6 +35,8 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      
      let maxPitchAngle: Double = 7.0
      let maxRollAngle: Double = 7.0
+     
+     // MARK: Variables
      
      var platformXAngle: Double = 0
      var platformYAngle: Double = 0
@@ -59,6 +65,8 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      let tiltHapticGenerator = UISelectionFeedbackGenerator()
      let buttonHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
      
+     // MARK: Functions
+     
      override func viewDidLoad() {
           super.viewDidLoad()
           
@@ -73,8 +81,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      }
      
      @IBAction func backButtonPressed(_ sender: UIButton) {
-          navigationController?.popViewController(animated: true)
-          motionManager.stopDeviceMotionUpdates()
+          returnToHome()
      }
      
      @IBAction func controlTypeButtonPressed(_ sender: UIButton) {
@@ -101,18 +108,6 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           xAngleLabel.isHidden = showDPAD
           yAngleLabel.isHidden = showDPAD
      }
-     
-     
-     /// Write to bluetooth device
-     /// - Parameter value: Value to write
-     //     func writeCharacteristic(value: String) {
-     //               if let peripheral = arduinoPeripheral {
-     //                    if let txCharacteristic = txCharacteristic {
-     //                         let data = value.data(using: .utf8)!
-     //                         peripheral.writeValue(data, for: txCharacteristic, type: .withoutResponse)
-     //                    }
-     //               }
-     //      }
      
      func setupCircles(shouldShow: Bool) {
           let circleFrame: CGRect = CGRect(x: self.view.frame.size.width/2 - circleDiameter/2, y: self.view.frame.size.height/2 - circleDiameter/2, width: circleDiameter, height: circleDiameter)
@@ -187,6 +182,8 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                rightArrowView?.removeFromSuperview()
           }
      }
+     
+     // MARK: D-Pad
      
      @objc func homeTapped(gesture: UILongPressGestureRecognizer) {
           if gesture.state == .began {
@@ -280,7 +277,6 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                               self.tiltHapticGenerator.selectionChanged()
                          }
                          
-                         //                         print("phoneX: \(-cleanedPitch), phoneY: \(-cleanedRoll)")
                          self.xAngleLabel.text = "x: \(Int(-cleanedPitch))°"
                          self.yAngleLabel.text = "y: \(Int(-cleanedRoll))°"
                          self.phoneXAngle = -cleanedPitch
@@ -304,9 +300,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           var platformXAngle: Double = 0
           var platformYAngle: Double = 0
           
-          
-          
-          var stringArray: [String] = ["",""]
+          var stringArray = [String]()
           stringArray = BLEString.components(separatedBy: ",")
           let platformAngles = stringArray.map({ Double($0) ?? 0 })
           
@@ -343,35 +337,26 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           return (cleanedPitch, cleanedRoll)
      }
      
-//     func platformToPhoneAngleDifference(phoneX phoneXAngle: Double, phoneY phoneYAngle: Double, platformX platformXAngle: Double, platformY platformYAngle: Double) -> (x: Double, y: Double) {
-//          var xAngle: Double = 0
-//          var yAngle: Double = 0
-//
-//          xAngle = phoneXAngle - platformXAngle
-//          yAngle = phoneYAngle - platformYAngle
-//
-//          return (xAngle, yAngle)
-//     }
-     
-     
-     
-     
-     
+     func returnToHome() {
+          motionManager.stopDeviceMotionUpdates()
+          navigationController?.popViewController(animated: true)
+     }
      
      
      // MARK: BluetoothSerialDelegate
      
      func serialDidChangeState() {
           if !serial.isPoweredOn {
-               print("Disconnected from BLE device.")
-               navigationController?.popViewController(animated: true)
+               print("Serial did change state.")
+               returnToHome()
                // TODO: disable button and start scanning again
           }
      }
      
      func serialDidDisconnect(_ peripheral: CBPeripheral, error: NSError?) {
           print("Disconnected from BLE device.")
-          navigationController?.popViewController(animated: true)
+          serial.startScan()
+          returnToHome()
           // TODO: disable button and start scanning again
      }
      
@@ -410,9 +395,25 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
 //          let cleanedPlatformMotorAngles = platformMotorDegreeAngles.map({Int(Double($0).rounded())})
           let cleanedSubtractedMotorAngles = subtractedMotorDegreeAngles.map({Int(Double($0).rounded())})
           
+          var positiveCleanedSubtractedMotorAngles = [Int]()
+          
+          for i in cleanedSubtractedMotorAngles {
+               var positiveAngle = 0
+               if i < 0 {
+                    positiveAngle = 360 + i
+               } else {
+                    positiveAngle = i
+               }
+               positiveCleanedSubtractedMotorAngles.append(positiveAngle)
+          }
+          
+//          print(cleanedSubtractedMotorAngles)
+//          print(positiveCleanedSubtractedMotorAngles)
+          
 //          let stringPhoneMotorAngles = cleanedPhoneMotorAngles.map({String(format: "%03d", $0)})
 //          let stringPlatformMotorAngles = cleanedPlatformMotorAngles.map({String(format: "%03d", $0)})
-          let stringSubtractedMotorAngles = cleanedSubtractedMotorAngles.map({String(format: "%03d", $0)})
+          let stringSubtractedMotorAngles = positiveCleanedSubtractedMotorAngles.map({String(format: "%03d", $0)})
+          
           
 //          print(stringPhoneMotorAngles)
 //          print(stringPlatformMotorAngles)

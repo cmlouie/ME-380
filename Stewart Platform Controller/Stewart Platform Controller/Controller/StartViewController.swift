@@ -35,17 +35,12 @@ class StartViewController: UIViewController, BluetoothSerialDelegate {
         startButton.setTitle("Start", for: .normal)
         startButton.setTitleColor(.white, for: .normal)
         startButton.layer.cornerRadius = 30
-        startButton.isEnabled = true
+        startButton.isEnabled = false
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        // Disable button if not connected
-        
-        serial.sendStringToDevice("HELLO")
-    }
-    
+    } 
     
     // MARK: BluetoothSerialDelegate
     
