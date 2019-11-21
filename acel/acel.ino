@@ -1,54 +1,96 @@
 #include "I2Cdev.h"
-
 #include "MPU6050_6Axis_MotionApps20.h"
-
-#include <SoftwareSerial.h>
-
-//SoftwareSerial Serial1(3,4);
-
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     #include "Wire.h"
 #endif
 
 MPU6050 mpu;
 
-#define OUTPUT_READABLE_YAWPITCHROLL
-#define LED_PIN 13 // (Arduino is 13, Teensy is 11, Teensy++ is 6)
-
+bool dmpReady = false;
 bool blinkState = false;
-bool dmpReady = false;  // set true if DMP init was successful
-uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
-uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
-uint16_t fifoCount;     // count of all bytes currently in FIFO
-uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+uint8_t devStatus;
+uint8_t mpuIntStatus;
+uint16_t fifoCount;
+uint16_t packetSize;
+uint8_t fifoBuffer[64];
+
 int increment = 0;
 
-
-// orientation/motion vars
-Quaternion q;           // [w, x, y, z]         quaternion container
-VectorInt16 aa;         // [x, y, z]            accel sensor measurements
-VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
-VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
-VectorFloat gravity;    // [x, y, z]            gravity vector
-float euler[3];         // [psi, theta, phi]    Euler angle container
-float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+Quaternion q;
+VectorInt16 aa;
+VectorInt16 aaReal;
+VectorInt16 aaWorld;
+VectorFloat gravity;
+float euler[3];
+float ypr[3];
 
 uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
 
-volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
+volatile bool mpuInterrupt = false;
 void dmpDataReady() {
     mpuInterrupt = true;
 }
 
-int pins[4] = {22, 23, 24, 25};
+const int pins[4] = {22, 23, 24, 25};
+int motorAngles[6] = {0, 0 , 0 , 0 , 0 , 0};
+const int degreeTolerance = 3;
+const byte numChars = 20;
+
+bool newData = false;
 int previousDirection = 0;
+char receivedChars[numChars];
 
 void setup() {
+  setupGyro();
+}
 
-  // Serial1 is pins 19 RX and 18 TX
-  // RX from bluetooth goes to 19
-  // TX from bluetooth goes to 18
+void loop() {
+
+  increment++;
+  readAngles();
+  if (!dmpReady) return;
+  sendAngles();
+  
+}
+
+void readAngles() {
+    static boolean recvInProgress = false;
+    static byte ndx = 0;
+    char startMarker = '<';
+    char endMarker = '>';
+    char rc;
+    bool shouldRead = true;
+    bool processed = false;
+
+    if (Serial1.available()) {
+      while (Serial1.available() > 0 && shouldRead) {
+        processed = true;
+        rc = Serial1.read();
+        if (rc == startMarker) {
+          shouldRead = false;
+        }
+      }
+
+      Serial.println(processed);
+      if (!processed) {
+        return;
+      }
+      
+      Serial.println("[");
+      for (int i = 0; i < 6; i ++) {
+        for (int j = 0; j < 3; j++) {
+          Serial.println(Serial1.read());
+          //motorAngles[i] += (rc * (100/pow(10, j) ));
+        }
+        //Serial.println(motorAngles[i]);
+      }
+      //Serial1.read();
+      Serial.println("]");
+    }
+}
+
+void setupGyro() {
   Serial1.begin(9600);
   Serial.begin(9600);
 
@@ -86,56 +128,24 @@ void setup() {
     Serial.print(devStatus);
     Serial.println(F(")"));
   }
-
 }
 
-void loop() {
-
-  increment++;
-
-  if (Serial1.available() > 0) {
-    Serial.write(Serial1.read());
-  }
-  
-  if (!dmpReady) return;
-
-  while (!mpuInterrupt && fifoCount < packetSize) {
-      // other program behavior stuff here
-      // .
-      // .
-      // .
-      // if you are really paranoid you can frequently test in between other
-      // stuff to see if mpuInterrupt is true, and if so, "break;" from the
-      // while() loop to immediately process the MPU data
-      // .
-      // .
-      // .
-  }
+void sendAngles() {
+  while (!mpuInterrupt && fifoCount < packetSize) {}
 
   mpuInterrupt = false;
   mpuIntStatus = mpu.getIntStatus();
   fifoCount = mpu.getFIFOCount();
 
-  // check for overflow (this should never happen unless our code is too inefficient)
   if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
-      // reset so we can continue cleanly
       mpu.resetFIFO();
       Serial.println(F("FIFO overflow!"));
 
-  // otherwise, check for DMP data ready interrupt (this should happen frequently)
   }  else if (mpuIntStatus & 0x02) {
-        // wait for correct available data length, should be a VERY short wait
         while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
-
-        // read a packet from FIFO
         mpu.getFIFOBytes(fifoBuffer, packetSize);
-        
-        // track FIFO count here in case there is > 1 packet available
-        // (this lets us immediately read more without waiting for an interrupt)
         fifoCount -= packetSize;
-
-
-        // display Euler angles in degrees
+        
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
@@ -150,6 +160,8 @@ void loop() {
           Serial1.write(data.c_str());
           increment = 0;
         }
+    } else {
+      Serial.println("Completely Busted");
     }
 }
 

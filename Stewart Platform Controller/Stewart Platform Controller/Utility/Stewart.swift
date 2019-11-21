@@ -23,6 +23,7 @@ class Stewart {
     let BASE_ANGLES = [358.55, 58.55, 121.45, 178.56, 241.45, 298.56 ]
     let PLATFORM_ANGLES = [342.59, 77.41, 102.59, 197.41, 222.59, 317.41]
     let MOTOR_ORIENTATIONS  = [4.163, Double.pi , 0 , 5.26129503 , 2.11970237641, 1.0218903]
+    
 
     var baseLocation: [SIMD3<Double>] = []
     var platformLocation : [SIMD3<Double>] = []
@@ -65,13 +66,7 @@ class Stewart {
                 cos(MOTOR_ORIENTATIONS[i]) * (legVectors[i].x - baseLocation[i].x)
                 + sin(MOTOR_ORIENTATIONS[i]) * (legVectors[i].y - baseLocation[i].y)
             );
-            
             motorAngles.append(asin(L/(sqrt(M*M + N*N))) - atan(N/M))
-            
-            if motorAngles[i] < 0 {
-                motorAngles[i] = 2 * Double.pi + motorAngles[i]
-            }
-            
         }
         return motorAngles
     }
