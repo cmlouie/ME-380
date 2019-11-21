@@ -10,11 +10,6 @@ import UIKit
 import CoreMotion
 import CoreBluetooth
 
-enum Landscape {
-     case left
-     case right
-}
-
 class ViewController: UIViewController, BluetoothSerialDelegate {
      
      // MARK: IBOutlets
@@ -26,7 +21,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      
      // MARK: Constants
      
-     var orientation: Landscape = .left
+     var orientation: UIInterfaceOrientation = .landscapeRight
      
      let motionManager = CMMotionManager()
      let stewart = Stewart()
@@ -53,6 +48,10 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      
      var showDPAD = true
      var centred = false
+     var hitTopWall = false
+     var hitLeftWall = false
+     var hitRightWall = false
+     var hitBottomWall = false
      
      var screenHeight: CGFloat?
      var circleView: UIView?
@@ -71,7 +70,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      var rightTap: UILongPressGestureRecognizer?
      
      // Haptic feedback
-     let tiltHapticGenerator = UISelectionFeedbackGenerator()
+     let tiltHapticGenerator = UINotificationFeedbackGenerator()
      let buttonHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
      let centredGenerator = UIImpactFeedbackGenerator(style: .light)
      
@@ -88,19 +87,31 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           yAngleLabel.isHidden = showDPAD
           
           screenHeight = self.view.frame.size.height
-          checkOrientationOfDevice()
+     }
+     
+     override func viewWillAppear(_ animated: Bool) {
+          super.viewWillAppear(animated)
+          checkCurrentOrientationOfUI()
      }
      
      override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
           super.viewWillTransition(to: size, with: coordinator)
-          checkOrientationOfDevice()
+          checkFutureOrientationOfUI()
      }
      
-     func checkOrientationOfDevice() {
-          if UIDevice.current.orientation == .landscapeLeft {
-               orientation = .left
-          } else if UIDevice.current.orientation == .landscapeRight {
-               orientation = .right
+     func checkCurrentOrientationOfUI() {
+          if UIApplication.shared.statusBarOrientation == .landscapeLeft  {
+               orientation = .landscapeLeft
+          } else if UIApplication.shared.statusBarOrientation == .landscapeRight {
+               orientation = .landscapeRight
+          }
+     }
+     
+     func checkFutureOrientationOfUI() {
+          if UIApplication.shared.statusBarOrientation == .landscapeLeft  {
+               orientation = .landscapeRight
+          } else if UIApplication.shared.statusBarOrientation == .landscapeRight {
+               orientation = .landscapeLeft
           }
      }
      
@@ -117,7 +128,11 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           
           if showDPAD {
                controlTypeButton.setTitle("Switch to gyro controller", for: .normal)
-               view.backgroundColor = .systemBackground
+               if #available(iOS 13.0, *) {
+                    view.backgroundColor = .systemBackground
+               } else {
+                    view.backgroundColor = .white
+               }
           } else {
                controlTypeButton.setTitle("Switch to DPAD controller", for: .normal)
           }
@@ -270,15 +285,13 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          var pitch: Double = 0
                          var roll: Double = 0
                          
-                         if self.orientation == .left {
-                              pitch = -(attitude.pitch * 180.0/Double.pi)
-                              roll = -(attitude.roll * 180.0/Double.pi)
-                         } else if self.orientation == .right {
+                         if self.orientation == .landscapeLeft {
                               pitch = attitude.pitch * 180.0/Double.pi
                               roll = attitude.roll * 180.0/Double.pi
+                         } else if self.orientation == .landscapeRight {
+                              pitch = -(attitude.pitch * 180.0/Double.pi)
+                              roll = -(attitude.roll * 180.0/Double.pi)
                          }
-                         
-                         print(roll, pitch)
                          
                          var cleanedPitch: Double = 0.0
                          var cleanedRoll: Double = 0.0
@@ -286,31 +299,47 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          // Cleaning pitch values
                          if abs(pitch) <= self.maxPitchAngle {
                               cleanedPitch = pitch
+                              self.hitLeftWall = false
+                              self.hitRightWall = false
                          }
                          else if pitch > self.maxPitchAngle {
                               cleanedPitch = self.maxPitchAngle
-                              self.tiltHapticGenerator.prepare()
-                              self.tiltHapticGenerator.selectionChanged()
+                              if !self.hitLeftWall {
+                                   self.tiltHapticGenerator.prepare()
+                                   self.tiltHapticGenerator.notificationOccurred(.warning)
+                                   self.hitLeftWall = true
+                              }
                          }
                          else {
                               cleanedPitch = -self.maxPitchAngle
-                              self.tiltHapticGenerator.prepare()
-                              self.tiltHapticGenerator.selectionChanged()
+                              if !self.hitRightWall {
+                                   self.tiltHapticGenerator.prepare()
+                                   self.tiltHapticGenerator.notificationOccurred(.warning)
+                                   self.hitRightWall = true
+                              }
                          }
                          
                          // Cleaning roll values
                          if abs(roll) <= self.maxRollAngle {
                               cleanedRoll = roll
+                              self.hitTopWall = false
+                              self.hitBottomWall = false
                          }
                          else if roll > self.maxRollAngle {
                               cleanedRoll = self.maxRollAngle
-                              self.tiltHapticGenerator.prepare()
-                              self.tiltHapticGenerator.selectionChanged()
+                              if !self.hitBottomWall {
+                                   self.tiltHapticGenerator.prepare()
+                                   self.tiltHapticGenerator.notificationOccurred(.warning)
+                                   self.hitBottomWall = true
+                              }
                          }
                          else {
                               cleanedRoll = -self.maxRollAngle
-                              self.tiltHapticGenerator.prepare()
-                              self.tiltHapticGenerator.selectionChanged()
+                              if !self.hitTopWall {
+                                   self.tiltHapticGenerator.prepare()
+                                   self.tiltHapticGenerator.notificationOccurred(.warning)
+                                   self.hitTopWall = true
+                              }
                          }
                          
                          // lance -- going to switch these two around to match platform gyroscope and processing,
@@ -326,19 +355,24 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          let roundedRoll = round(cleanedRoll)
                          let roundedPitch = round(cleanedPitch)
                          
-                         if roundedRoll == 0 && roundedPitch == 0 && !self.centred {
-                              UIView.animate(withDuration: 0.2) {
-                                   self.view.backgroundColor = UIColor(red: 15/255, green: 227/255, blue: 111/255, alpha: 1.0)
-                              }
-                              self.centredGenerator.prepare()
-                              self.centredGenerator.impactOccurred()
-                              self.centred = true
-                         } else if roundedRoll == 0 && roundedPitch == 0 && self.centred {
+                         if roundedRoll == 0 && roundedPitch == 0 {
                               self.view.backgroundColor = UIColor(red: 15/255, green: 227/255, blue: 111/255, alpha: 1.0)
+                              if !self.centred {
+                                   UIView.animate(withDuration: 0.2) {
+                                        self.view.backgroundColor = UIColor(red: 15/255, green: 227/255, blue: 111/255, alpha: 1.0)
+                                   }
+                                   self.centredGenerator.prepare()
+                                   self.centredGenerator.impactOccurred()
+                                   self.centred = true
+                              }
                          } else {
                               self.centred = false
                               UIView.animate(withDuration: 0.2) {
-                                   self.view.backgroundColor = .systemBackground
+                                   if #available(iOS 13.0, *) {
+                                        self.view.backgroundColor = .systemBackground
+                                   } else {
+                                        self.view.backgroundColor = .white
+                                   }
                               }
                          }
                          
