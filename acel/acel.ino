@@ -140,10 +140,12 @@ void loop() {
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
 
-        bool positivePitch = ypr[1] >= 0;
-        bool positiveRoll = ypr[2] >= 0;
-        String data = String(positivePitch ? "+" : "") + String(ypr[1] * 180/M_PI) + "," + String(positiveRoll ? "+" : "") + String(ypr[2] * 180/M_PI);
-        // Serial.println(data);
+        float ypr1 = ypr[1] - 5 * M_PI / 180;
+        float ypr2 = ypr[2] - 1 * M_PI / 180;
+
+        bool positivePitch = ypr1 >= 0;
+        bool positiveRoll = ypr2 >= 0;
+        String data = String(positivePitch ? "+" : "") + String(ypr1 * 180/M_PI) + "," + String(positiveRoll ? "+" : "") + String(ypr2 * 180/M_PI);
         if (increment >= 8) {
           Serial1.write(data.c_str());
           increment = 0;

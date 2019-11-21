@@ -12,17 +12,17 @@ import simd
 
 class Stewart {
     
-    let BASE_RADIUS = 8.285
+    let BASE_RADIUS = 8.739
     let PLATFORM_RADIUS = 6.523
-    let BASE_PLATFORM_RADIUS = 17.0
-    let HORN_RADIUS = 1.5
+    let BASE_PLATFORM_RADIUS = 15.2
+    let HORN_RADIUS = 3.0
     
     let ROD_LENGTH = 17.3
     let RUBBER_BEARING_WIDTH = 0.4
 
-    let BASE_ANGLES = [288.889, 11.111, 48.889, 131.111, 168.889, 251.111]
-    let PLATFORM_ANGLES = [317.35, 342.65, 77.35, 102.65, 197.35, 222.65]
-    let MOTOR_ORIENTATIONS  = [0, -Double.pi/3 , 2 * Double.pi / 3 , Double.pi/3 , 4 * Double.pi / 3 , Double.pi]
+    let BASE_ANGLES = [358.55, 58.55, 121.45, 178.56, 241.45, 298.56 ]
+    let PLATFORM_ANGLES = [342.59, 77.41, 102.59, 197.41, 222.59, 317.41]
+    let MOTOR_ORIENTATIONS  = [4.163, Double.pi , 0 , 5.26129503 , 2.11970237641, 1.0218903]
 
     var baseLocation: [SIMD3<Double>] = []
     var platformLocation : [SIMD3<Double>] = []
