@@ -4,54 +4,112 @@
     #include "Wire.h"
 #endif
 
-MPU6050 mpu;
-
-bool dmpReady = false;
-bool blinkState = false;
+float ypr[3];
+float euler[3];
 
 uint8_t devStatus;
 uint8_t mpuIntStatus;
 uint16_t fifoCount;
 uint16_t packetSize;
-uint8_t fifoBuffer[64];
+uint8_t fifoBuffer[1024];
+
+bool dmpReady = false;
+bool blinkState = false;
+
+const int pins[4] = {22, 23, 24, 25};
+int motorAngles[6] = {0, 0 , 0 , 0 , 0, 0};
+int motorPosition[6] = {0, 180, 0, 180, 0 , 180};
+uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
+
+volatile bool mpuInterrupt = false;
 
 int increment = 0;
+const int degreeTolerance = 3;
+const float stepsPerDegree = 4096 / 360;
+const int delaySpeed = 1;
 
+MPU6050 mpu;
 Quaternion q;
 VectorInt16 aa;
 VectorInt16 aaReal;
 VectorInt16 aaWorld;
 VectorFloat gravity;
-float euler[3];
-float ypr[3];
-
-uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
-
-volatile bool mpuInterrupt = false;
-void dmpDataReady() {
-    mpuInterrupt = true;
-}
-
-const int pins[4] = {22, 23, 24, 25};
-int motorAngles[6] = {0, 0 , 0 , 0 , 0 , 0};
-const int degreeTolerance = 3;
-const byte numChars = 20;
-
-bool newData = false;
-int previousDirection = 0;
-char receivedChars[numChars];
 
 void setup() {
   setupGyro();
 }
 
 void loop() {
-
   increment++;
   readAngles();
   if (!dmpReady) return;
+  moveMotors();
   sendAngles();
-  
+}
+
+void moveMotors() {
+
+    for (int i = 0; i < 6; i ++) {
+      if (abs(motorAngles[i]) <= degreeTolerance) continue;
+      if (motorAngles[i] > 0) {
+        digitalWrite(pins[0] + 4 * i, HIGH);
+        digitalWrite(pins[1] + 4 * i, LOW);
+        digitalWrite(pins[2] + 4 * i, LOW);
+        digitalWrite(pins[3] + 4 * i, LOW);
+      } else {
+        digitalWrite(pins[0] + 4 * i, LOW);
+        digitalWrite(pins[1] + 4 * i, LOW);
+        digitalWrite(pins[2] + 4 * i, LOW);
+        digitalWrite(pins[3] + 4 * i, HIGH);
+      }
+      delay(delaySpeed);
+    }
+    for (int i = 0; i < 6; i ++) {
+      if (abs(motorAngles[i]) <= degreeTolerance) continue;
+      if (motorAngles[i] > 0) {
+        digitalWrite(pins[0] + 4 * i, LOW);
+        digitalWrite(pins[1] + 4 * i, HIGH);
+        digitalWrite(pins[2] + 4 * i, LOW);
+        digitalWrite(pins[3] + 4 * i, LOW);
+      } else {
+        digitalWrite(pins[0] + 4 * i, LOW);
+        digitalWrite(pins[1] + 4 * i, LOW);
+        digitalWrite(pins[2] + 4 * i, HIGH);
+        digitalWrite(pins[3] + 4 * i, LOW);
+      }
+      delay(delaySpeed);
+    }
+    for (int i = 0; i < 6; i ++) {
+      if (abs(motorAngles[i]) <= degreeTolerance) continue;
+      if (motorAngles[i] > 0) {
+        digitalWrite(pins[0] + 4 * i, LOW);
+        digitalWrite(pins[1] + 4 * i, LOW);
+        digitalWrite(pins[2] + 4 * i, HIGH);
+        digitalWrite(pins[3] + 4 * i, LOW);
+      } else {
+        digitalWrite(pins[0] + 4 * i, LOW);
+        digitalWrite(pins[1] + 4 * i, HIGH);
+        digitalWrite(pins[2] + 4 * i, LOW);
+        digitalWrite(pins[3] + 4 * i, LOW);
+      }
+      delay(delaySpeed);
+    }
+    for (int i = 0; i < 6; i ++) {
+      if (abs(motorAngles[i]) <= degreeTolerance) continue;
+      if (motorAngles[i] > 0) {
+        digitalWrite(pins[0] + 4 * i, LOW);
+        digitalWrite(pins[1] + 4 * i, LOW);
+        digitalWrite(pins[2] + 4 * i, LOW);
+        digitalWrite(pins[3] + 4 * i, HIGH);
+      } else {
+        digitalWrite(pins[0] + 4 * i, HIGH);
+        digitalWrite(pins[1] + 4 * i, LOW);
+        digitalWrite(pins[2] + 4 * i, LOW);
+        digitalWrite(pins[3] + 4 * i, LOW);
+      }
+      delay(delaySpeed);
+    }
+
 }
 
 void readAngles() {
@@ -64,28 +122,43 @@ void readAngles() {
     bool processed = false;
 
     if (Serial1.available()) {
-      while (Serial1.available() > 0 && shouldRead) {
-        processed = true;
+      int retry = 0;
+      while (Serial1.available() > 0 && shouldRead && retry < 10000) {
+        retry++;
         rc = Serial1.read();
         if (rc == startMarker) {
           shouldRead = false;
+          processed = true;
         }
       }
 
-      Serial.println(processed);
-      if (!processed) {
+      if (retry >= 10000 || !processed) {
+        Serial.println("Exiting after retry");
         return;
       }
       
       Serial.println("[");
       for (int i = 0; i < 6; i ++) {
+        motorAngles[i] = 0;
         for (int j = 0; j < 3; j++) {
-          Serial.println(Serial1.read());
-          //motorAngles[i] += (rc * (100/pow(10, j) ));
+          int retry = 0;
+          while(Serial1.available() <= 0 && retry < 10000) {
+            retry++;
+          }
+
+          if (retry >= 10000) {
+            Serial.println("Exiting after retry");
+            return;
+          }
+          char rc = Serial1.read() - 48;
+          motorAngles[i] += (rc * pow(10, 2-j));
         }
-        //Serial.println(motorAngles[i]);
+        if (motorAngles[i] > 180) {
+          motorAngles[i] = motorAngles[i] - 360;
+        }
+        Serial.println(motorAngles[i], DEC);
       }
-      //Serial1.read();
+      Serial1.read(); // Read one more to remove the endMarker
       Serial.println("]");
     }
 }
@@ -137,7 +210,7 @@ void sendAngles() {
   mpuIntStatus = mpu.getIntStatus();
   fifoCount = mpu.getFIFOCount();
 
-  if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
+  if ((mpuIntStatus & 0x10) || fifoCount == 16384) {
       mpu.resetFIFO();
       Serial.println(F("FIFO overflow!"));
 
@@ -145,7 +218,7 @@ void sendAngles() {
         while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
         mpu.getFIFOBytes(fifoBuffer, packetSize);
         fifoCount -= packetSize;
-        
+
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
@@ -161,72 +234,10 @@ void sendAngles() {
           increment = 0;
         }
     } else {
-      Serial.println("Completely Busted");
+      Serial.println("Completely Broken");
     }
 }
 
-void move(int directions[]) {
-
-  for (int k = 0; k < 128; k ++ ) {
-
-    for (int i = 0; i < 6; i ++) {
-      if (directions[i] > 0 && (k < 32 || directions[i] == 2) ) {
-        digitalWrite(pins[0] + 4 * i, HIGH);
-        digitalWrite(pins[1] + 4 * i, LOW);
-        digitalWrite(pins[2] + 4 * i, LOW);
-        digitalWrite(pins[3] + 4 * i, LOW);
-      } else if (directions[i] < 0  && (k < 32 || directions[i] == -2)) {
-        digitalWrite(pins[0] + 4 * i, LOW);
-        digitalWrite(pins[1] + 4 * i, LOW);
-        digitalWrite(pins[2] + 4 * i, LOW);
-        digitalWrite(pins[3] + 4 * i, HIGH);
-      }
-    }
-    delay(2);
-
-    for (int i = 0; i < 6; i ++) {
-      if (directions[i] > 0 && (k < 32 || directions[i] == 2)) {
-        digitalWrite(pins[0] + 4 * i, LOW);
-        digitalWrite(pins[1] + 4 * i, HIGH);
-        digitalWrite(pins[2] + 4 * i, LOW);
-        digitalWrite(pins[3] + 4 * i, LOW);
-      } else if (directions[i] < 0  && (k < 32 || directions[i] == -2)) {
-        digitalWrite(pins[0] + 4 * i, LOW);
-        digitalWrite(pins[1] + 4 * i, LOW);
-        digitalWrite(pins[2] + 4 * i, HIGH);
-        digitalWrite(pins[3] + 4 * i, LOW);
-      }
-    }
-    delay(2);
-
-    for (int i = 0; i < 6; i ++) {
-      if (directions[i] > 0 && (k < 32 || directions[i] == 2)) {
-        digitalWrite(pins[0] + 4 * i, LOW);
-        digitalWrite(pins[1] + 4 * i, LOW);
-        digitalWrite(pins[2] + 4 * i, HIGH);
-        digitalWrite(pins[3] + 4 * i, LOW);
-      } else if (directions[i] < 0  && (k < 32 || directions[i] == -2)) {
-        digitalWrite(pins[0] + 4 * i, LOW);
-        digitalWrite(pins[1] + 4 * i, HIGH);
-        digitalWrite(pins[2] + 4 * i, LOW);
-        digitalWrite(pins[3] + 4 * i, LOW);
-      }
-    }
-    delay(2);
-
-    for (int i = 0; i < 6; i ++) {
-      if (directions[i] > 0 && (k < 32 || directions[i] == 2)) {
-        digitalWrite(pins[0] + 4 * i, LOW);
-        digitalWrite(pins[1] + 4 * i, LOW);
-        digitalWrite(pins[2] + 4 * i, LOW);
-        digitalWrite(pins[3] + 4 * i, HIGH);
-      } else if (directions[i] < 0  && (k < 32 || directions[i] == -2)) {
-        digitalWrite(pins[0] + 4 * i, HIGH);
-        digitalWrite(pins[1] + 4 * i, LOW);
-        digitalWrite(pins[2] + 4 * i, LOW);
-        digitalWrite(pins[3] + 4 * i, LOW);
-      }
-    }
-    delay(2);
-  }
+void dmpDataReady() {
+    mpuInterrupt = true;
 }
