@@ -24,7 +24,7 @@ uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\
 volatile bool mpuInterrupt = false;
 
 int increment = 0;
-const int degreeTolerance = 3;
+const int degreeTolerance = 7;
 const float stepsPerDegree = 4096 / 360;
 const int delaySpeed = 1;
 
@@ -48,10 +48,16 @@ void loop() {
 }
 
 void moveMotors() {
+    // 2 4 6 clockwise is positive
+    // 1 3 5 counter clockwise is positive
 
+    // 1 3 5 -> positive angle is reverse
+    // 1 3 5 -> negative angle is regular
+    // 2 4 6 -> positive is regular
+    // 2 4 6 -> negative is reverse
     for (int i = 0; i < 6; i ++) {
       if (abs(motorAngles[i]) <= degreeTolerance) continue;
-      if (motorAngles[i] > 0) {
+      if ((motorAngles[i] > 0 && i % 2 == 1) || (motorAngles[i] < 0 && i % 2 == 0)) {
         digitalWrite(pins[0] + 4 * i, HIGH);
         digitalWrite(pins[1] + 4 * i, LOW);
         digitalWrite(pins[2] + 4 * i, LOW);
@@ -66,7 +72,7 @@ void moveMotors() {
     }
     for (int i = 0; i < 6; i ++) {
       if (abs(motorAngles[i]) <= degreeTolerance) continue;
-      if (motorAngles[i] > 0) {
+      if ((motorAngles[i] > 0 && i % 2 == 1) || (motorAngles[i] < 0 && i % 2 == 0)) {
         digitalWrite(pins[0] + 4 * i, LOW);
         digitalWrite(pins[1] + 4 * i, HIGH);
         digitalWrite(pins[2] + 4 * i, LOW);
@@ -81,7 +87,7 @@ void moveMotors() {
     }
     for (int i = 0; i < 6; i ++) {
       if (abs(motorAngles[i]) <= degreeTolerance) continue;
-      if (motorAngles[i] > 0) {
+      if ((motorAngles[i] > 0 && i % 2 == 1) || (motorAngles[i] < 0 && i % 2 == 0)) {
         digitalWrite(pins[0] + 4 * i, LOW);
         digitalWrite(pins[1] + 4 * i, LOW);
         digitalWrite(pins[2] + 4 * i, HIGH);
@@ -96,7 +102,7 @@ void moveMotors() {
     }
     for (int i = 0; i < 6; i ++) {
       if (abs(motorAngles[i]) <= degreeTolerance) continue;
-      if (motorAngles[i] > 0) {
+      if ((motorAngles[i] > 0 && i % 2 == 1) || (motorAngles[i] < 0 && i % 2 == 0)) {
         digitalWrite(pins[0] + 4 * i, LOW);
         digitalWrite(pins[1] + 4 * i, LOW);
         digitalWrite(pins[2] + 4 * i, LOW);

@@ -430,7 +430,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           
           // lance -- going to switch these two around to match platform gyroscope and processing,
           // changing from (cleanedPitch, cleanedRoll) -> (cleanedRoll, cleanedPitch)
-          return (cleanedRoll, cleanedPitch)
+          return (cleanedPitch, cleanedRoll)
      }
      
      func returnToHome() {
