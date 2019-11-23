@@ -36,8 +36,8 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // Seconds
      
      // 20 degrees max before unsuported platform angles for current design
-     let maxPitchAngle: Double = 20.0
-     let maxRollAngle: Double = 20.0
+     let maxPitchAngle: Double = 10.0
+     let maxRollAngle: Double = 10.0
      
      // MARK: Variables
      
@@ -346,6 +346,9 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          // changing from "x: \(Int(-cleanedPitch))°" -> "x: \(Int(-cleanedRoll))°"
                          // changing from "y: \(Int(-cleanedRoll))°" -> "y: \(Int(-cleanedPitch))°"
                          
+                         // lancey ruining things again
+                         self.serialDidReceiveString()
+                         
                          self.xAngleLabel.text = "x: \(Int(-cleanedRoll))°"
                          self.yAngleLabel.text = "y: \(Int(-cleanedPitch))°"
                          
@@ -456,22 +459,13 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           // TODO: disable button and start scanning again
      }
      
-     func serialDidReceiveString(_ string: String) {
-          platformXAngle = extractPlatformAngles(from: string).x
-          platformYAngle = extractPlatformAngles(from: string).y
+     func serialDidReceiveString() {
           
-          print("platformX: \(platformXAngle), platformY: \(platformYAngle)")
           print("phoneX: \(phoneXAngle), phoneY: \(phoneYAngle)")
           
           let phoneMotorRadians = self.stewart.motorAngles(xAngle: phoneXAngle.toRadians(), yAngle: phoneYAngle.toRadians())
-          let platformMotorRadians = self.stewart.motorAngles(xAngle: platformXAngle.toRadians(), yAngle: platformYAngle.toRadians())
-          var subtractedMotorDegreeAngles = [Double]()
           
-          for i in 0..<6 {
-               subtractedMotorDegreeAngles.append(phoneMotorRadians[i] - platformMotorRadians[i])
-          }
-          
-          let cleanedSubtractedMotorAngles = subtractedMotorDegreeAngles.map({$0.toDegrees()})
+          let cleanedSubtractedMotorAngles = phoneMotorRadians.map({$0.toDegrees()})
                .map({Int(Double($0).rounded())})
           
           var positiveCleanedSubtractedMotorAngles = [Int]()
