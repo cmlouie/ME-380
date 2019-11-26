@@ -92,6 +92,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      override func viewWillAppear(_ animated: Bool) {
           super.viewWillAppear(animated)
           checkCurrentOrientationOfUI()
+          toggleControlType()
      }
      
      override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

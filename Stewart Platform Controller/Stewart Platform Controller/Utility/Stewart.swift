@@ -12,13 +12,14 @@ import simd
 
 class Stewart {
     
+    // Dimensions in cm
     let BASE_RADIUS = 9.437
     let PLATFORM_RADIUS = 8.670
-    let BASE_PLATFORM_RADIUS = 16.8
-    let HORN_RADIUS = 1.6
+    let BASE_PLATFORM_RADIUS = 15.5
+    let HORN_RADIUS = 4.0
     
-    let ROD_LENGTH = 17.3
-    let RUBBER_BEARING_WIDTH = 0.0
+    let ROD_LENGTH = 17.1
+    let RUBBER_BEARING_WIDTH = 0.03
 
     let BASE_ANGLES = [354.84, 65.16, 114.84, 185.16, 234.84, 305.16 ]
     let PLATFORM_ANGLES = [336.91, 83.09, 96.91, 203.09, 216.91, 323.09]
