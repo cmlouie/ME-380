@@ -1,17 +1,19 @@
-#include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
-
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-int motorAngles[6] = {0, 0 , 0 , 0 , 0, 0};
+int actualPulse[6] = {290, 365, 365, 405, 350, 300 };
+int motorAngles[6] = {0, 0, 0, 0, 0, 0};
+int increment = 0;
+int incrementMove = 0;
 
-const float SERVOMIN = 300; // 'minimum' pulse length count (out of 4096)
-const float SERVOMAX = 500; // 'maximum' pulse length count (out of 4096)
-const float SERVOMIDVAL = 400;
-const float SERVOMID[6] = {SERVOMIN, 355, 355, 425, 350, 300}; // 'mid' pulse length count (out of 4096)
+const int SERVOMID[6] = {290, 365, 355, 410, 350, 300 };
+const int SERVOMIN[6] = {170, 245, 205, 255, 230, 170 };
+const int SERVOMAX[6] = {450, 505, 505, 605, 490, 440 };
 
-const int degreeTolerance = 1;
+const int PULSE_PER_DEGREE = 2;
+const int pulseTolerance = 7;
 uint8_t servonum = 0;
+int val[6] = {0, 0 ,0 ,0 ,0 ,0};
 
 void setup() {
   Serial1.begin(9600);
@@ -20,25 +22,26 @@ void setup() {
   pwm.setPWMFreq(60);
   
   delay(50);
-
   for (int i = 0; i <6; i++) {
-    if (i == 0 || i == 2 || i == 4) {
-      pwm.setPWM(i, 0, SERVOMID[i] - 50);
-    }else {
-      pwm.setPWM(i, 0, SERVOMID[i] + 50);
-    }
+    pwm.setPWM(i, 0, 0);
   }
-
-  delay(500);
+  delay(250);
 
   for (int i=0; i<6; i++) {
-    Serial.println(i);
     pwm.setPWM(i, 0, SERVOMID[i]);
   }
+  
+  delay(500);
 }
 
 void loop() {
+  incrementMove++;
   readAngles();
+
+  if (incrementMove == 5) {
+      moveMotors();
+      incrementMove = 0;
+  }
 }
 
 void readAngles() {
@@ -52,7 +55,7 @@ void readAngles() {
 
     if (Serial1.available()) {
       int retry = 0;
-      while (Serial1.available() > 0 && shouldRead && retry < 10000) {
+      while (Serial1.available() > 0 && shouldRead) {
         retry++;
         rc = Serial1.read();
         if (rc == startMarker) {
@@ -62,11 +65,10 @@ void readAngles() {
       }
 
       if (retry >= 10000 || !processed) {
-        Serial.println("Exiting after retry");
         return;
       }
       
-      Serial.println("[");
+      //Serial.println("[");
       for (int i = 0; i < 6; i ++) {
         motorAngles[i] = 0;
         for (int j = 0; j < 3; j++) {
@@ -88,12 +90,30 @@ void readAngles() {
         Serial.println(motorAngles[i], DEC);
       }
       Serial1.read(); // Read one more to remove the endMarker
-      Serial.println("]");
+      //Serial.println("]");
+    } else {
+      //Serial.println("No data");
     }
 }
 
 void moveMotors() {
   for (int i = 0; i < 6; i++) {
-    
+    val[i] = SERVOMID[i];
+    // 0 2 4
+    if (i % 2 == 0) {
+      if (motorAngles[i] >= 0) {
+        val[i] = SERVOMID[i] - motorAngles[i]*PULSE_PER_DEGREE;
+      } else {
+        val[i] = SERVOMID[i] - motorAngles[i]*PULSE_PER_DEGREE;
+      }
+    // 1 3 5
+    } else {
+      if (motorAngles[i] >= 0) {
+        val[i] = SERVOMID[i] + motorAngles[i]*PULSE_PER_DEGREE;
+      } else {
+        val[i] = SERVOMID[i] + motorAngles[i]*PULSE_PER_DEGREE;
+      }
+    }
+    pwm.setPWM(i, 0, max(min(val[i],SERVOMAX[i]),SERVOMIN[i]));
   }
 }
