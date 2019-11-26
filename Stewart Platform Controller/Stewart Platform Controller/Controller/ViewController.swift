@@ -36,8 +36,8 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // Seconds
      
      // 20 degrees max before unsuported platform angles for current design
-     let maxPitchAngle: Double = 10.0
-     let maxRollAngle: Double = 10.0
+     let maxPitchAngle: Double = 5.0
+     let maxRollAngle: Double = 5.0
      
      // MARK: Variables
      

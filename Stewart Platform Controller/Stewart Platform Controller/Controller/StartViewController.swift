@@ -40,6 +40,8 @@ class StartViewController: UIViewController, BluetoothSerialDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        startButton.isEnabled = false
     } 
     
     // MARK: BluetoothSerialDelegate
