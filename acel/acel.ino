@@ -1,11 +1,40 @@
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
+
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+
 int motorAngles[6] = {0, 0 , 0 , 0 , 0, 0};
 
-int increment = 0;
-const int degreeTolerance = 7;
+const float SERVOMIN = 300; // 'minimum' pulse length count (out of 4096)
+const float SERVOMAX = 500; // 'maximum' pulse length count (out of 4096)
+const float SERVOMIDVAL = 400;
+const float SERVOMID[6] = {SERVOMIN, 355, 355, 425, 350, 300}; // 'mid' pulse length count (out of 4096)
+
+const int degreeTolerance = 1;
+uint8_t servonum = 0;
 
 void setup() {
   Serial1.begin(9600);
   Serial.begin(9600);
+  pwm.begin();
+  pwm.setPWMFreq(60);
+  
+  delay(50);
+
+  for (int i = 0; i <6; i++) {
+    if (i == 0 || i == 2 || i == 4) {
+      pwm.setPWM(i, 0, SERVOMID[i] - 50);
+    }else {
+      pwm.setPWM(i, 0, SERVOMID[i] + 50);
+    }
+  }
+
+  delay(500);
+
+  for (int i=0; i<6; i++) {
+    Serial.println(i);
+    pwm.setPWM(i, 0, SERVOMID[i]);
+  }
 }
 
 void loop() {
