@@ -33,7 +33,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      let arrowHeight: CGFloat = 70.0
      let arrowOffset: CGFloat = 110.0
      
-     let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // Seconds
+     let sensorUpdateFrequency: TimeInterval = 1.0 / 60.0 // Seconds
      
      // 20 degrees max before unsuported platform angles for current design
      let maxPitchAngle: Double = 18.0
