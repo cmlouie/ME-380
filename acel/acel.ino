@@ -38,7 +38,7 @@ void loop() {
   incrementMove++;
   readAngles();
 
-  if (incrementMove == 10) {
+  if (incrementMove == 500) {
       moveMotors();
       incrementMove = 0;
   }
