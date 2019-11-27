@@ -38,7 +38,7 @@ void loop() {
   incrementMove++;
   readAngles();
 
-  if (incrementMove == 5) {
+  if (incrementMove == 10) {
       moveMotors();
       incrementMove = 0;
   }
@@ -68,7 +68,6 @@ void readAngles() {
         return;
       }
       
-      //Serial.println("[");
       for (int i = 0; i < 6; i ++) {
         motorAngles[i] = 0;
         for (int j = 0; j < 3; j++) {
@@ -90,9 +89,9 @@ void readAngles() {
         Serial.println(motorAngles[i], DEC);
       }
       Serial1.read(); // Read one more to remove the endMarker
-      //Serial.println("]");
+
     } else {
-      //Serial.println("No data");
+
     }
 }
 
