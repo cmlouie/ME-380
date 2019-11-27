@@ -35,9 +35,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      
      let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // Seconds
      
-     // 20 degrees max before unsuported platform angles for current design
-     let maxPitchAngle: Double = 5.0
-     let maxRollAngle: Double = 5.0
+     let maxTiltRadius: Double = 10.0
      
      // MARK: Variables
      
@@ -53,6 +51,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      var hitRightWall = false
      var hitBottomWall = false
      
+     var screenWidth: CGFloat?
      var screenHeight: CGFloat?
      var circleView: UIView?
      var circleBorderView: UIView?
@@ -86,7 +85,9 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           xAngleLabel.isHidden = showDPAD
           yAngleLabel.isHidden = showDPAD
           
+          screenWidth = self.view.frame.size.width
           screenHeight = self.view.frame.size.height
+          
      }
      
      override func viewWillAppear(_ animated: Bool) {
@@ -287,61 +288,47 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          var roll: Double = 0
                          
                          if self.orientation == .landscapeLeft {
-                              pitch = attitude.pitch * 180.0/Double.pi
-                              roll = attitude.roll * 180.0/Double.pi
+                              pitch = -attitude.roll * 180.0/Double.pi
+                              roll = -attitude.pitch * 180.0/Double.pi
                          } else if self.orientation == .landscapeRight {
-                              pitch = -(attitude.pitch * 180.0/Double.pi)
-                              roll = -(attitude.roll * 180.0/Double.pi)
+                              pitch = attitude.roll * 180.0/Double.pi
+                              roll = attitude.pitch * 180.0/Double.pi
                          }
                          
                          var cleanedPitch: Double = 0.0
                          var cleanedRoll: Double = 0.0
                          
-                         // Cleaning pitch values
-                         if abs(pitch) <= self.maxPitchAngle {
+                         let currentTiltRadius = self.getTiltRadius(pitch: pitch, roll: roll)
+                         let currentTiltAngle = self.getTiltAngle(pitch: pitch, roll: roll)
+                         
+                         // Cleaning radius angle values
+                         if currentTiltRadius > self.maxTiltRadius {
+                              print("REACHED MAX")
+                              
+                              if pitch >= 0 && roll >= 0 {
+                                   // Q1
+                                   cleanedPitch = self.maxTiltRadius * sin(currentTiltAngle)
+                                   cleanedRoll = self.maxTiltRadius * cos(currentTiltAngle)
+                              } else if pitch >= 0 && roll <= 0 {
+                                   // Q2
+                                   cleanedPitch = self.maxTiltRadius * sin(Double.pi - currentTiltAngle)
+                                   cleanedRoll = -self.maxTiltRadius * cos(Double.pi - currentTiltAngle)
+                              } else if pitch <= 0 && roll <= 0 {
+                                   // Q3
+                                   cleanedPitch = -self.maxTiltRadius * sin(currentTiltAngle - Double.pi)
+                                   cleanedRoll = -self.maxTiltRadius * cos(currentTiltAngle - Double.pi)
+                              } else {
+                                   // Q4
+                                   cleanedPitch = -self.maxTiltRadius * sin((2 * Double.pi) - currentTiltAngle)
+                                   cleanedRoll = self.maxTiltRadius * cos((2 * Double.pi) - currentTiltAngle)
+                              }
+                         } else {
                               cleanedPitch = pitch
-                              self.hitLeftWall = false
-                              self.hitRightWall = false
-                         }
-                         else if pitch > self.maxPitchAngle {
-                              cleanedPitch = self.maxPitchAngle
-                              if !self.hitLeftWall {
-                                   self.tiltHapticGenerator.prepare()
-                                   self.tiltHapticGenerator.notificationOccurred(.warning)
-                                   self.hitLeftWall = true
-                              }
-                         }
-                         else {
-                              cleanedPitch = -self.maxPitchAngle
-                              if !self.hitRightWall {
-                                   self.tiltHapticGenerator.prepare()
-                                   self.tiltHapticGenerator.notificationOccurred(.warning)
-                                   self.hitRightWall = true
-                              }
+                              cleanedRoll = roll
                          }
                          
-                         // Cleaning roll values
-                         if abs(roll) <= self.maxRollAngle {
-                              cleanedRoll = roll
-                              self.hitTopWall = false
-                              self.hitBottomWall = false
-                         }
-                         else if roll > self.maxRollAngle {
-                              cleanedRoll = self.maxRollAngle
-                              if !self.hitBottomWall {
-                                   self.tiltHapticGenerator.prepare()
-                                   self.tiltHapticGenerator.notificationOccurred(.warning)
-                                   self.hitBottomWall = true
-                              }
-                         }
-                         else {
-                              cleanedRoll = -self.maxRollAngle
-                              if !self.hitTopWall {
-                                   self.tiltHapticGenerator.prepare()
-                                   self.tiltHapticGenerator.notificationOccurred(.warning)
-                                   self.hitTopWall = true
-                              }
-                         }
+                         print("PITCH: \(cleanedPitch)")
+                         print("ROLL: \(cleanedRoll)")
                          
                          // lance -- going to switch these two around to match platform gyroscope and processing,
                          // changing from "x: \(Int(-cleanedPitch))°" -> "x: \(Int(-cleanedRoll))°"
@@ -350,14 +337,14 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          // lancey ruining things again
                          self.serialDidReceiveString()
                          
-                         self.xAngleLabel.text = "x: \(Int(-cleanedRoll))°"
-                         self.yAngleLabel.text = "y: \(Int(-cleanedPitch))°"
+                         self.xAngleLabel.text = "x: \(Int(round(cleanedPitch)))°"
+                         self.yAngleLabel.text = "y: \(Int(round(cleanedRoll)))°"
                          
-                         self.phoneXAngle = -cleanedRoll
-                         self.phoneYAngle = -cleanedPitch
+                         self.phoneXAngle = cleanedPitch
+                         self.phoneYAngle = cleanedRoll
                          
-                         let roundedRoll = round(cleanedRoll)
                          let roundedPitch = round(cleanedPitch)
+                         let roundedRoll = round(cleanedRoll)
                          
                          if roundedRoll == 0 && roundedPitch == 0 {
                               self.view.backgroundColor = UIColor(red: 15/255, green: 227/255, blue: 111/255, alpha: 1.0)
@@ -380,12 +367,12 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                               }
                          }
                          
-                         let circlePitchDisplacement = Utilities.map(minRange: -self.maxPitchAngle, maxRange: self.maxPitchAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedPitch)
+                         let circlePitchDisplacement = Utilities.map(minRange: -self.maxTiltRadius, maxRange: self.maxTiltRadius, minDomain: -Double(self.screenHeight!/2 - 50), maxDomain: Double(self.screenHeight!/2 - 50), value: cleanedPitch)
                          
-                         let circleRollDisplacement = Utilities.map(minRange: -self.maxRollAngle, maxRange: self.maxRollAngle, minDomain: -Double(self.screenHeight!/2), maxDomain: Double(self.screenHeight!/2), value: cleanedRoll)
+                         let circleRollDisplacement = Utilities.map(minRange: -self.maxTiltRadius, maxRange: self.maxTiltRadius, minDomain: -Double(self.screenHeight!/2 - 50), maxDomain: Double(self.screenHeight!/2 - 50), value: cleanedRoll)
                          
                          // Move the red circle according to the attitude pitch and roll
-                         self.circleView?.frame.origin = CGPoint(x: self.view.frame.size.width/2 - self.circleDiameter/2 - CGFloat(circlePitchDisplacement), y: self.view.frame.size.height/2 - self.circleDiameter/2 + CGFloat(circleRollDisplacement))
+                         self.circleView?.frame.origin = CGPoint(x: self.screenWidth!/2 - self.circleDiameter/2 - CGFloat(-circleRollDisplacement), y: self.screenHeight!/2 - self.circleDiameter/2 + CGFloat(-circlePitchDisplacement))
                     }
                }
           }
@@ -440,6 +427,35 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      func returnToHome() {
           motionManager.stopDeviceMotionUpdates()
           navigationController?.popViewController(animated: true)
+     }
+     
+     
+     func getTiltRadius(pitch: Double, roll: Double) -> Double {
+          let radius = sqrt(pow(pitch, 2) + pow(roll, 2))
+          print("TILT RADIUS: \(radius)")
+          return radius
+     }
+     
+     func getTiltAngle(pitch: Double, roll: Double) -> Double {
+          let theta = atan(abs(pitch) / abs(roll))
+          var angle: Double = 0.0
+          
+          if pitch >= 0 && roll >= 0 {
+               // Q1
+               angle = theta
+          } else if pitch >= 0 && roll <= 0 {
+              // Q2
+               angle = Double.pi - theta
+          } else if pitch <= 0 && roll <= 0 {
+               // Q3
+               angle = Double.pi + theta
+          } else {
+               // Q4
+               angle = (2 * Double.pi) - theta
+          }
+          
+          print("TILT ANGLE: \(angle.toDegrees())")
+          return angle
      }
      
      
