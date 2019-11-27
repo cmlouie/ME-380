@@ -51,18 +51,13 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      var phoneYAngle: Double = 0
      
      var centred = false
-     var hitTopWall = false
-     var hitLeftWall = false
-     var hitRightWall = false
-     var hitBottomWall = false
+     var hitBorder = false
      
      var screenWidth: CGFloat!
      var screenHeight: CGFloat!
      
      // Haptic feedback
-     let tiltHapticGenerator = UINotificationFeedbackGenerator()
-     let buttonHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
-     let centredGenerator = UIImpactFeedbackGenerator(style: .light)
+     let centredGenerator = UIImpactFeedbackGenerator(style: .medium)
      
      // MARK: Functions
      
@@ -202,6 +197,18 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                     } else {
                          self.centred = false
                     }
+                    
+                    if currentTiltRadius >= self.maxTiltRadius {
+                         if !self.hitBorder {
+                              self.centredGenerator.prepare()
+                              self.centredGenerator.impactOccurred()
+                              self.hitBorder = true
+                         }
+                    } else {
+                         self.hitBorder = false
+                    }
+                    
+//                    self.boundaryRing.alpha = CGFloat(Utilities.map(minRange: 0, maxRange: self.maxTiltRadius, minDomain: 0.0, maxDomain: 1.0, value: currentTiltRadius))
                     
                     // Move the indicators when tilted
                     let circlePitchDisplacement = Utilities.map(minRange: -self.maxTiltRadius, maxRange: self.maxTiltRadius, minDomain: -Double(self.screenHeight/2 - 100), maxDomain: Double(self.screenHeight/2 - 100), value: cleanedPitch)
