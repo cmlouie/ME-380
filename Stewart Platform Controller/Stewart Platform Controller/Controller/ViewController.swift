@@ -18,6 +18,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      @IBOutlet weak var xAngleLabel: UILabel!
      @IBOutlet weak var yAngleLabel: UILabel!
      @IBOutlet weak var controlTypeButton: UIButton!
+     @IBOutlet weak var sensitivityControl: UISegmentedControl!
      
      // MARK: Constants
      
@@ -33,11 +34,20 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      let arrowHeight: CGFloat = 70.0
      let arrowOffset: CGFloat = 110.0
      
-     let sensorUpdateFrequency: TimeInterval = 1.0 / 100.0 // Seconds
+     let slowSensitivityFactor = 0.5
+     let normalSensitivityFactor = 1.0
+     let fastSensitivityFactor = 2.0
+     
+     let sensorUpdateFrequency: TimeInterval = 1.0 / 100 // Seconds
+     let bluetoothSendFrequency: TimeInterval = 1.0 / 60 // Seconds
      
      let maxTiltRadius: Double = 10.0
      
      // MARK: Variables
+     
+     var bluetoothTimer: Timer?
+     
+     var currentSensitivityFactor = 1.0
      
      var platformXAngle: Double = 0
      var platformYAngle: Double = 0
@@ -80,6 +90,8 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           
           serial.delegate = self
           
+          startTimer()
+          
           setupCircles(shouldShow: !showDPAD)
           setupArrows(shouldShow: showDPAD)
           xAngleLabel.isHidden = showDPAD
@@ -88,6 +100,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           screenWidth = self.view.frame.size.width
           screenHeight = self.view.frame.size.height
           
+          sensitivityControl.selectedSegmentIndex = 1 // Normal
      }
      
      override func viewWillAppear(_ animated: Bool) {
@@ -99,6 +112,19 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
           super.viewWillTransition(to: size, with: coordinator)
           checkFutureOrientationOfUI()
+     }
+     
+     func startTimer() {
+          if bluetoothTimer == nil {
+              bluetoothTimer = Timer.scheduledTimer(timeInterval: bluetoothSendFrequency, target: self, selector: #selector(sendAnglesToArduino), userInfo: nil, repeats: true)
+          }
+     }
+     
+     func stopTimer() {
+          if bluetoothTimer != nil {
+               bluetoothTimer?.invalidate()
+               bluetoothTimer = nil
+          }
      }
      
      func checkCurrentOrientationOfUI() {
@@ -125,6 +151,23 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           toggleControlType()
      }
      
+     @IBAction func sensitivityChanged(_ sender: UISegmentedControl) {
+          switch sensitivityControl.selectedSegmentIndex {
+          case 0:
+               print("Slow")
+               currentSensitivityFactor = slowSensitivityFactor
+          case 1:
+               print("Normal")
+               currentSensitivityFactor = normalSensitivityFactor
+          case 2:
+               print("Fast")
+               currentSensitivityFactor = fastSensitivityFactor
+          default:
+               print("None")
+               currentSensitivityFactor = normalSensitivityFactor
+          }
+     }
+     
      func toggleControlType() {
           showDPAD = !showDPAD
           
@@ -149,6 +192,16 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           // Angle labels
           xAngleLabel.isHidden = showDPAD
           yAngleLabel.isHidden = showDPAD
+          
+          // Sensitivity control
+          sensitivityControl.isHidden = showDPAD
+          
+          // Timer
+          if showDPAD {
+               stopTimer()
+          } else {
+               startTimer()
+          }
      }
      
      func setupCircles(shouldShow: Bool) {
@@ -288,11 +341,11 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          var roll: Double = 0
                          
                          if self.orientation == .landscapeLeft {
-                              pitch = -attitude.roll * 180.0/Double.pi
-                              roll = -attitude.pitch * 180.0/Double.pi
+                              pitch = -attitude.roll * 180.0/Double.pi * self.currentSensitivityFactor
+                              roll = -attitude.pitch * 180.0/Double.pi * self.currentSensitivityFactor
                          } else if self.orientation == .landscapeRight {
-                              pitch = attitude.roll * 180.0/Double.pi
-                              roll = attitude.pitch * 180.0/Double.pi
+                              pitch = attitude.roll * 180.0/Double.pi * self.currentSensitivityFactor
+                              roll = attitude.pitch * 180.0/Double.pi * self.currentSensitivityFactor
                          }
                          
                          var cleanedPitch: Double = 0.0
@@ -303,7 +356,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                          
                          // Cleaning radius angle values
                          if currentTiltRadius > self.maxTiltRadius {
-                              print("REACHED MAX")
+//                              print("REACHED MAX")
                               
                               if pitch >= 0 && roll >= 0 {
                                    // Q1
@@ -327,15 +380,15 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                               cleanedRoll = roll
                          }
                          
-                         print("PITCH: \(cleanedPitch)")
-                         print("ROLL: \(cleanedRoll)")
+//                         print("PITCH: \(cleanedPitch)")
+//                         print("ROLL: \(cleanedRoll)")
                          
                          // lance -- going to switch these two around to match platform gyroscope and processing,
                          // changing from "x: \(Int(-cleanedPitch))°" -> "x: \(Int(-cleanedRoll))°"
                          // changing from "y: \(Int(-cleanedRoll))°" -> "y: \(Int(-cleanedPitch))°"
                          
                          // lancey ruining things again
-                         self.serialDidReceiveString()
+//                         self.serialDidReceiveString()
                          
                          self.xAngleLabel.text = "x: \(Int(round(cleanedPitch)))°"
                          self.yAngleLabel.text = "y: \(Int(round(cleanedRoll)))°"
@@ -389,7 +442,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      
      func getTiltRadius(pitch: Double, roll: Double) -> Double {
           let radius = sqrt(pow(pitch, 2) + pow(roll, 2))
-          print("TILT RADIUS: \(radius)")
+//          print("TILT RADIUS: \(radius)")
           return radius
      }
      
@@ -411,7 +464,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
                angle = (2 * Double.pi) - theta
           }
           
-          print("TILT ANGLE: \(angle.toDegrees())")
+//          print("TILT ANGLE: \(angle.toDegrees())")
           return angle
      }
      
@@ -433,7 +486,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           // TODO: disable button and start scanning again
      }
      
-     func serialDidReceiveString() {
+     @objc func sendAnglesToArduino() {
           
           print("phoneX: \(phoneXAngle), phoneY: \(phoneYAngle)")
           
@@ -460,7 +513,11 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           let formattedMotorAngles = "<" + combinedMotorAngles + ">"
           
           serial.sendStringToDevice(formattedMotorAngles)
+          
           print(formattedMotorAngles)
+          
           print("----------")
      }
+     
+     
 }

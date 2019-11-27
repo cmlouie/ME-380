@@ -3,7 +3,7 @@
     <device id="retina6_1" orientation="landscape" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -94,9 +94,24 @@
                                     <action selector="controlTypeButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="C8i-Fa-o9l"/>
                                 </connections>
                             </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CCk-sh-VrU">
+                                <rect key="frame" x="298" y="332" width="300" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="Dfo-oP-KGJ"/>
+                                </constraints>
+                                <segments>
+                                    <segment title="Slow"/>
+                                    <segment title="Normal"/>
+                                    <segment title="Fast"/>
+                                </segments>
+                                <connections>
+                                    <action selector="sensitivityChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="ThP-yk-OwO"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="CCk-sh-VrU" secondAttribute="bottom" constant="30" id="3l0-gJ-Svg"/>
                             <constraint firstItem="H7B-Y2-JhG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="7Ao-84-gYX"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fOv-GE-BbF" secondAttribute="trailing" constant="75" id="8R7-Qz-IiK"/>
                             <constraint firstItem="XVg-Wr-Ueb" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="LUf-tF-AqG"/>
@@ -105,6 +120,7 @@
                             <constraint firstItem="XVg-Wr-Ueb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="75" id="YAY-JV-zM0"/>
                             <constraint firstItem="H7B-Y2-JhG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="bTt-C5-SMg"/>
                             <constraint firstItem="fOv-GE-BbF" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="p4E-0X-5K8"/>
+                            <constraint firstItem="CCk-sh-VrU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ueO-aN-03e"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -112,6 +128,7 @@
                     <connections>
                         <outlet property="backButton" destination="H7B-Y2-JhG" id="H0g-bL-V2n"/>
                         <outlet property="controlTypeButton" destination="fec-hU-ye3" id="PFc-Tv-O2i"/>
+                        <outlet property="sensitivityControl" destination="CCk-sh-VrU" id="STG-Ek-qsE"/>
                         <outlet property="xAngleLabel" destination="XVg-Wr-Ueb" id="ceL-wJ-l71"/>
                         <outlet property="yAngleLabel" destination="fOv-GE-BbF" id="O7v-zh-rcJ"/>
                     </connections>
