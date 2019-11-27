@@ -381,49 +381,6 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           }
      }
      
-     func extractPlatformAngles(from BLEString: String) -> (x: Double, y: Double) {
-          var platformXAngle: Double = 0
-          var platformYAngle: Double = 0
-          
-          var stringArray = [String]()
-          stringArray = BLEString.components(separatedBy: ",")
-          let platformAngles = stringArray.map({ Double($0) ?? 0 })
-          
-          if platformAngles.count == 2 {
-               platformXAngle = platformAngles[0]
-               platformYAngle = platformAngles[1]
-          }
-          
-          var cleanedPitch: Double = 0.0
-          var cleanedRoll: Double = 0.0
-          
-          // Cleaning pitch values
-          if abs(platformXAngle) <= self.maxPitchAngle {
-               cleanedPitch = platformXAngle
-          }
-          else if platformXAngle > self.maxPitchAngle {
-               cleanedPitch = self.maxPitchAngle
-          }
-          else {
-               cleanedPitch = -self.maxPitchAngle
-          }
-          
-          // Cleaning roll values
-          if abs(platformYAngle) <= self.maxRollAngle {
-               cleanedRoll = platformYAngle
-          }
-          else if platformYAngle > self.maxRollAngle {
-               cleanedRoll = self.maxRollAngle
-          }
-          else {
-               cleanedRoll = -self.maxRollAngle
-          }
-          
-          // lance -- going to switch these two around to match platform gyroscope and processing,
-          // changing from (cleanedPitch, cleanedRoll) -> (cleanedRoll, cleanedPitch)
-          return (cleanedPitch, cleanedRoll)
-     }
-     
      func returnToHome() {
           motionManager.stopDeviceMotionUpdates()
           navigationController?.popViewController(animated: true)
