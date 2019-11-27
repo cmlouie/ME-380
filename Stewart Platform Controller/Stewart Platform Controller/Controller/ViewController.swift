@@ -39,7 +39,7 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
      let fastSensitivityFactor = 2.0
      
      let sensorUpdateFrequency: TimeInterval = 1.0 / 100 // Seconds
-     let bluetoothSendFrequency: TimeInterval = 1.0 / 60 // Seconds
+     let bluetoothSendFrequency: TimeInterval = 1.0 / 1.0 // Seconds
      
      let maxTiltRadius: Double = 10.0
      
@@ -107,6 +107,12 @@ class ViewController: UIViewController, BluetoothSerialDelegate {
           super.viewWillAppear(animated)
           checkCurrentOrientationOfUI()
           toggleControlType()
+     }
+     
+     override func viewWillDisappear(_ animated: Bool) {
+          super.viewWillDisappear(animated)
+          
+          stopTimer()
      }
      
      override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
