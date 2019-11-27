@@ -11,13 +11,11 @@
 		F2022EDC2381D7A200222C3E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2022EDB2381D7A200222C3E /* Extensions.swift */; };
 		F22C28E623812C8C00EBBD69 /* BluetoothSerial.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22C28E523812C8C00EBBD69 /* BluetoothSerial.swift */; };
 		F28D409223440200004D4B8F /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F28D409123440200004D4B8F /* StartViewController.swift */; };
-		F28D40D62346A7AF004D4B8F /* Arrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F28D40D52346A7AF004D4B8F /* Arrow.swift */; };
 		F2B9DD9423426D2700AAC274 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DD9323426D2700AAC274 /* AppDelegate.swift */; };
 		F2B9DD9823426D2700AAC274 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DD9723426D2700AAC274 /* ViewController.swift */; };
 		F2B9DD9B23426D2700AAC274 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2B9DD9923426D2700AAC274 /* Main.storyboard */; };
 		F2B9DD9D23426D2900AAC274 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F2B9DD9C23426D2900AAC274 /* Assets.xcassets */; };
 		F2B9DDA023426D2900AAC274 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2B9DD9E23426D2900AAC274 /* LaunchScreen.storyboard */; };
-		F2B9DDA8234278D300AAC274 /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DDA7234278D300AAC274 /* Circle.swift */; };
 		F2B9DDAA23428DB200AAC274 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B9DDA923428DB200AAC274 /* Utilities.swift */; };
 /* End PBXBuildFile section */
 
@@ -26,7 +24,6 @@
 		F2022EDB2381D7A200222C3E /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F22C28E523812C8C00EBBD69 /* BluetoothSerial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSerial.swift; sourceTree = "<group>"; };
 		F28D409123440200004D4B8F /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
-		F28D40D52346A7AF004D4B8F /* Arrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arrow.swift; sourceTree = "<group>"; };
 		F2B9DD9023426D2700AAC274 /* Deans List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Deans List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2B9DD9323426D2700AAC274 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F2B9DD9723426D2700AAC274 /* ViewController.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -34,7 +31,6 @@
 		F2B9DD9C23426D2900AAC274 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F2B9DD9F23426D2900AAC274 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F2B9DDA123426D2900AAC274 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F2B9DDA7234278D300AAC274 /* Circle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
 		F2B9DDA923428DB200AAC274 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -49,15 +45,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F22C28E223811C7800EBBD69 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				F2B9DDA7234278D300AAC274 /* Circle.swift */,
-				F28D40D52346A7AF004D4B8F /* Arrow.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
 		F22C28E323811CAD00EBBD69 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -99,7 +86,6 @@
 			children = (
 				F2B9DD9323426D2700AAC274 /* AppDelegate.swift */,
 				F22C28E323811CAD00EBBD69 /* Controller */,
-				F22C28E223811C7800EBBD69 /* View */,
 				F22C28E423811CBC00EBBD69 /* Utility */,
 				F2B9DD9923426D2700AAC274 /* Main.storyboard */,
 				F2B9DD9C23426D2900AAC274 /* Assets.xcassets */,
@@ -181,9 +167,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2B9DD9823426D2700AAC274 /* ViewController.swift in Sources */,
-				F28D40D62346A7AF004D4B8F /* Arrow.swift in Sources */,
 				F28D409223440200004D4B8F /* StartViewController.swift in Sources */,
-				F2B9DDA8234278D300AAC274 /* Circle.swift in Sources */,
 				F22C28E623812C8C00EBBD69 /* BluetoothSerial.swift in Sources */,
 				F2022EDC2381D7A200222C3E /* Extensions.swift in Sources */,
 				D7D187E52342E4DF009B5EB4 /* Stewart.swift in Sources */,

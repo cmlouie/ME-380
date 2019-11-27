@@ -9,15 +9,12 @@
 import UIKit
 import CoreBluetooth
 
-var arduinoPeripheral: CBPeripheral?
-var txCharacteristic: CBCharacteristic?
-
 class StartViewController: UIViewController, BluetoothSerialDelegate {
     
     // MARK: IBOutlets
     
     @IBOutlet weak var bluetoothStatusLabel: UILabel!
-    @IBOutlet weak var startButton: UIButton!
+    @IBOutlet weak var playButton: UIButton!
     
     // MARK: Functions
     
@@ -27,15 +24,12 @@ class StartViewController: UIViewController, BluetoothSerialDelegate {
         // Initialize serial
         serial = BluetoothSerial(delegate: self)
         
-        bluetoothStatusLabel.text = "Searching for bluetooth device..."
+        bluetoothStatusLabel.text = "SEARCHING FOR STEWART PLATFORM..."
         
         // Setup UI
-        startButton.setBackgroundColor(color: .systemGreen, forState: .normal)
-        startButton.setBackgroundColor(color: .systemGray, forState: .disabled)
-        startButton.setTitle("Start", for: .normal)
-        startButton.setTitleColor(.white, for: .normal)
-        startButton.layer.cornerRadius = 30
-        startButton.isEnabled = false
+        view.backgroundColor = .black
+        playButton.setImage(UIImage(named: "PlayOff"), for: .normal)
+        playButton.isEnabled = false
     }
     
     // MARK: BluetoothSerialDelegate
@@ -43,9 +37,9 @@ class StartViewController: UIViewController, BluetoothSerialDelegate {
     func serialDidChangeState() {
         if serial.isPoweredOn {
             serial.startScan()
-            bluetoothStatusLabel.text = "Searching for bluetooth device..."
+            bluetoothStatusLabel.text = "SEARCHING FOR STEWART PLATFORM..."
         } else {
-            bluetoothStatusLabel.text = "Turn on bluetooth to connect to devices."
+            bluetoothStatusLabel.text = "TURN ON BLUETOOTH TO CONNECT."
         }
     }
     
@@ -56,14 +50,16 @@ class StartViewController: UIViewController, BluetoothSerialDelegate {
     }
     
     func serialDidConnect(_ peripheral: CBPeripheral) {
-        bluetoothStatusLabel.text = "Connected to Stewart Platform."
-        startButton.isEnabled = true
+        bluetoothStatusLabel.text = "CONNECTED TO GROUP 22 STEWART PLATFORM."
+        playButton.setImage(UIImage(named: "PlayOn"), for: .normal)
+        playButton.isEnabled = true
     }
     
     func serialDidDisconnect(_ peripheral: CBPeripheral, error: NSError?) {
         serial.startScan()
-        startButton.isEnabled = false
-        bluetoothStatusLabel.text = "Searching for bluetooth device..."
+        playButton.setImage(UIImage(named: "PlayOff"), for: .normal)
+        playButton.isEnabled = false
+        bluetoothStatusLabel.text = "SEARCHING FOR STEWART PLATFORM..."
         print("The \(peripheral) peripheral disconnected")
     }
     
